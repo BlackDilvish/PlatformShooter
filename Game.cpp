@@ -39,6 +39,54 @@ void Game::initVariables()
     mapSize = {2000.f, (float)window->getSize().y};
 }
 
+void Game::initMap(size_t mapId)
+{
+    std::stringstream ss;
+    ss<<"Assets/Data/level"<<mapId<<".txt";
+    std::ifstream configFile(ss.str());
+
+    if(configFile.is_open())
+    {
+        std::string type;
+
+        while(configFile>>type)
+        {
+            if(type == "platform:")
+            {
+                std::cout<<"Platform Loaded\n";
+                float platformParams[4];
+                for(size_t i=0; i<4 ;i++)
+                     configFile>>platformParams[i];
+
+                platformManager.addPlatform(platformParams);
+            }
+            else if(type == "enemyOnPlatform:")
+            {
+                int platformId;
+                configFile>>platformId;
+
+                enemiesVector.push_back(Enemy(platformManager[platformId]));
+            }
+            else if(type == "enemyFree:")
+            {
+                float enemyParams[4];
+                for(size_t i=0; i<4 ;i++)
+                     configFile>>enemyParams[i];
+
+                enemiesVector.push_back(Enemy(enemyParams));
+            }
+            else
+                std::cout<<"Undefined type of data in config file\n";
+        }
+
+        configFile.close();
+    }
+    else
+    {
+        std::cout<<"Brak pliku\n";
+    }
+}
+
 void Game::pollevents()
 {
     sf::Event event;
@@ -52,10 +100,7 @@ void Game::pollevents()
             switch(event.key.code)
             {
             case sf::Keyboard::T:
-                platformManager.addPlatform({300.f,50.f},{600.f,600.f});
-                platformManager.addPlatform({300.f,50.f},{1000.f,400.f});
-                platformManager.addPlatform({300.f,50.f},{1500.f,600.f});
-                enemiesVector.push_back(Enemy(platformManager[1]));
+                initMap(1);
                 break;
             default:
                 break;

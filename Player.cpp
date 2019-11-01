@@ -120,8 +120,13 @@ void Player::updateEnemiesInteraction(std::vector<Enemy> &enemiesVector)
         for(size_t j=0; j<bulletsVector.size(); j++)
             if(bulletsVector[j].bulletShape.getGlobalBounds().intersects(enemiesVector[i].getGlobalBounds()))
             {
+                if(enemiesVector[i].getHP() > 1)
+                    enemiesVector[i].setHP(enemiesVector[i].getHP() - 1);
+                else
+                    enemiesVector.erase(enemiesVector.begin() + i);
+
                 bulletsVector.erase(bulletsVector.begin() + j);
-                enemiesVector.erase(enemiesVector.begin() + i);
+
             }
     }
 }

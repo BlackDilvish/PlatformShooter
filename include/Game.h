@@ -3,6 +3,8 @@
 
 #include<vector>
 #include<iostream>
+#include<sstream>
+#include<fstream>
 #include<SFML/Graphics.hpp>
 #include"Player.h"
 #include"PlatformsManager.h"
@@ -29,6 +31,7 @@ class Game
         void initWindow();
         void initVariables();
         void initView();
+        void initMap(size_t mapId);
 
         ///updates
         void pollevents();

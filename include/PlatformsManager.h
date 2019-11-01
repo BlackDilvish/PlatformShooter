@@ -11,6 +11,7 @@ class PlatformsManager
         virtual ~PlatformsManager();
 
         void addPlatform(sf::Vector2f size, sf::Vector2f pos);
+        void addPlatform(float *platformParams);
         void render(sf::RenderTarget &window);
 
         size_t getSize();
