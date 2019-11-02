@@ -7,15 +7,19 @@ Player::Player()
 
 Player::~Player()
 {
-    //dtor
+    delete runAnimationRight;
+    delete runAnimationLeft;
+    delete idleAnimationRight;
+    delete idleAnimationLeft;
 }
 
 void Player::initPlayer()
 {
-    playerSize={50.f, 50.f};
+    playerSize={80.f, 90.f};
     playerPosition={100.f,100.f};
     movementSpeed=10.f;
     gravity=9.81f;
+    previousDirection=1;
 
     bulletSpeed = 5.f;
     shootCooldown = 1.f;
@@ -24,11 +28,8 @@ void Player::initPlayer()
 
     inSpace=true;
     collidingTop=false;
-    //playerTex.loadFromFile("assets/images/player1.png");
-
 
     playerShape.setSize(playerSize);
-    //playerShape.setTexture(&playerTex);
     playerShape.setPosition(playerPosition);
 
     tempBullet.bulletShape.setRadius(5.f);
@@ -36,11 +37,15 @@ void Player::initPlayer()
 
     tempBullet.periodOfLife = 2.f;
     tempBullet.lifeTimer = 0;
+
+    runAnimationRight = new Animation("Assets/Images/MageRun.png",5,{978, 1127},playerShape.getSize(),0.08f,true,false);
+    runAnimationLeft = new Animation("Assets/Images/MageRun.png",5,{978, 1127},playerShape.getSize(),0.08f,true,true);
+    idleAnimationRight = new Animation("Assets/Images/MageStands.png",5,{867, 1059},playerShape.getSize(),0.15f,true,false);
+    idleAnimationLeft = new Animation("Assets/Images/MageStands.png",5,{867, 1059},playerShape.getSize(),0.15f,true,true);
 }
 
 void Player::reset(sf::Vector2f pos,sf::Vector2f mapSize)
 {
-    //playerShape.setTexture(&playerTex);
     playerShape.setPosition(pos);
     currentMapSize = mapSize;
 }
@@ -73,11 +78,38 @@ void Player::updateInput()
     }
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    {
         velocity.x-=movementSpeed;
+        previousDirection = 0;
+        runAnimationLeft->update();
+    }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    {
         velocity.x+=movementSpeed;
+        previousDirection = 1;
+        runAnimationRight->update();
+    }
+    else
+        if(previousDirection)
+            idleAnimationRight->update();
+        else
+            idleAnimationLeft->update();
 
     playerShape.move(velocity);
+    if(collidingTop)
+    {
+        runAnimationRight->setPosition(sf::Vector2f(playerShape.getPosition().x, runAnimationRight->getPosition().y));
+        runAnimationLeft->setPosition(sf::Vector2f(playerShape.getPosition().x, runAnimationRight->getPosition().y));
+        idleAnimationRight->setPosition(sf::Vector2f(playerShape.getPosition().x, runAnimationRight->getPosition().y));
+        idleAnimationLeft->setPosition(sf::Vector2f(playerShape.getPosition().x, runAnimationRight->getPosition().y));
+    }
+    else
+    {
+        runAnimationRight->setPosition(playerShape.getPosition());
+        runAnimationLeft->setPosition(playerShape.getPosition());
+        idleAnimationRight->setPosition(playerShape.getPosition());
+        idleAnimationLeft->setPosition(playerShape.getPosition());
+    }
 }
 
 void Player::updateShooting(sf::RenderWindow& window, sf::View view)
@@ -222,7 +254,17 @@ void Player::update(sf::RenderWindow &window,sf::View view,PlatformsManager Pman
 
 void Player::render(sf::RenderTarget &window)
 {
-    window.draw(playerShape);
+    //window.draw(playerShape);
+
+    if(velocity.x > 0)
+        runAnimationRight->render(window);
+    else if(velocity.x < 0)
+        runAnimationLeft->render(window);
+    else
+        if(previousDirection)
+            idleAnimationRight->render(window);
+        else
+            idleAnimationLeft->render(window);
 
     for(size_t i=0; i<bulletsVector.size(); i++)
         window.draw(bulletsVector[i].bulletShape);

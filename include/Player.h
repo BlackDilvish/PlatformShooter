@@ -8,6 +8,7 @@
 #include<math.h>
 #include"PlatformsManager.h"
 #include"Enemy.h"
+#include"Animation.h"
 
 class Player
 {
@@ -33,6 +34,7 @@ class Player
         void updateWindowCollisions();
         void updatePlatformCollisions(PlatformsManager Pman);
 
+        ///Variables
         sf::Vector2f velocity;
         sf::Vector2f playerSize;
         sf::Vector2f playerPosition;
@@ -63,6 +65,14 @@ class Player
         float bulletSpeed;
         float shootCooldown;
         float shootTimer;
+        bool previousDirection;
+
+        ///Animation
+
+        Animation* runAnimationRight;
+        Animation* runAnimationLeft;
+        Animation* idleAnimationRight;
+        Animation* idleAnimationLeft;
 };
 
 #endif // Player_H
