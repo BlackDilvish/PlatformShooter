@@ -2,7 +2,7 @@
 
 Enemy::Enemy(sf::RectangleShape &platform)
 {
-    enemyShape.setSize(sf::Vector2f(50.f, 50.f));
+    enemyShape.setSize(sf::Vector2f(100.f, 100.f));
     enemyShape.setPosition(sf::Vector2f(platform.getPosition().x + platform.getSize().x/2.f, platform.getPosition().y - enemyShape.getSize().y));
     enemyShape.setFillColor(sf::Color::Green);
 
@@ -15,7 +15,7 @@ Enemy::Enemy(sf::RectangleShape &platform)
 
 Enemy::Enemy(const sf::Vector2f &Position,const sf::Vector2f &Range)
 {
-    enemyShape.setSize(sf::Vector2f(50.f, 50.f));
+    enemyShape.setSize(sf::Vector2f(100.f, 100.f));
     enemyShape.setPosition(Position);
     enemyShape.setFillColor(sf::Color::Red);
 
@@ -27,7 +27,7 @@ Enemy::Enemy(const sf::Vector2f &Position,const sf::Vector2f &Range)
 
 Enemy::Enemy(float *enemyParams)
 {
-    enemyShape.setSize(sf::Vector2f(50.f,50.f));
+    enemyShape.setSize(sf::Vector2f(100.f,100.f));
     enemyShape.setPosition(enemyParams[0],enemyParams[1]);
     enemyShape.setFillColor(sf::Color::Red);
 
@@ -46,7 +46,7 @@ void Enemy::initVariables()
 {
     enemyShape.setFillColor(sf::Color::Blue);
 
-    redHealthBar.setSize(sf::Vector2f(50.f, 5.f));
+    redHealthBar.setSize(sf::Vector2f(enemyShape.getSize().x, 10.f));
     redHealthBar.setPosition(enemyShape.getPosition().x, enemyShape.getPosition().y + 5.f);
     redHealthBar.setFillColor(sf::Color::Red);
 

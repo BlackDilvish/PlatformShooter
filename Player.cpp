@@ -15,7 +15,7 @@ Player::~Player()
 
 void Player::initPlayer()
 {
-    playerSize={80.f, 90.f};
+    playerSize={90.f, 105.f};
     playerPosition={100.f,100.f};
     movementSpeed=10.f;
     gravity=9.81f;
@@ -71,7 +71,7 @@ void Player::updateInput()
     else
         velocity.y=0;
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W) && !inSpace )
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W) && !inSpace)
     {
         inSpace=true;
         velocity.y-=gravity*3;
@@ -81,15 +81,19 @@ void Player::updateInput()
     {
         velocity.x-=movementSpeed;
         previousDirection = 0;
-        runAnimationLeft->update();
+
+        if(!inSpace)
+            runAnimationLeft->update();
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
         velocity.x+=movementSpeed;
         previousDirection = 1;
-        runAnimationRight->update();
+
+        if(!inSpace)
+            runAnimationRight->update();
     }
-    else
+    else if(!inSpace)
         if(previousDirection)
             idleAnimationRight->update();
         else
@@ -167,16 +171,16 @@ void Player::updateWindowCollisions()
 {
     sf::FloatRect playerBounds=playerShape.getGlobalBounds();
 
-    if(playerBounds.top + playerBounds.height >= currentMapSize.y)
+    if(playerBounds.top + playerBounds.height >= 1080)
     {
-        playerShape.setPosition(playerBounds.left, currentMapSize.y - playerBounds.height);
+        playerShape.setPosition(playerBounds.left, 1080 - playerBounds.height);
 
         if(inSpace)
             inSpace=false;
     }
-    if(playerBounds.top <= 0)
+    if(playerBounds.top <= currentMapSize.y)
     {
-        playerShape.setPosition(playerBounds.left, 0);
+        playerShape.setPosition(playerBounds.left, currentMapSize.y);
         velocity.y=0;
     }
     if(playerBounds.left <= 0)
@@ -237,7 +241,7 @@ void Player::updatePlatformCollisions(PlatformsManager Pman)
 
     }
 
-    if(playerBounds.top + playerBounds.height<720 && !collidingTop)
+    if(playerBounds.top + playerBounds.height<1080 && !collidingTop)
         inSpace=true;
 }
 
@@ -254,8 +258,6 @@ void Player::update(sf::RenderWindow &window,sf::View view,PlatformsManager Pman
 
 void Player::render(sf::RenderTarget &window)
 {
-    //window.draw(playerShape);
-
     if(velocity.x > 0)
         runAnimationRight->render(window);
     else if(velocity.x < 0)

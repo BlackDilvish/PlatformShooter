@@ -17,6 +17,7 @@ class PlatformsManager
         size_t getSize();
         sf::RectangleShape& operator[](size_t id);
         void destroyPlatform(size_t id);
+        void clear();
 
     protected:
 

@@ -44,6 +44,11 @@ void PlatformsManager::destroyPlatform(size_t id)
     platformsVector.erase(platformsVector.begin() + id);
 }
 
+void PlatformsManager::clear()
+{
+    platformsVector.clear();
+}
+
 size_t PlatformsManager::getSize()
 {
     return platformsVector.size();

@@ -15,11 +15,9 @@ Game::~Game()
 
 void Game::initWindow()
 {
-    sf::VideoMode videomode;
-    videomode.width = 960;
-    videomode.height = 720;
+    sf::VideoMode videomode = sf::VideoMode::getDesktopMode();
 
-    window = new sf::RenderWindow(videomode, "Platformer");
+    window = new sf::RenderWindow(videomode, "Platformer", sf::Style::Fullscreen);
 
     window->setFramerateLimit(60);
 }
@@ -36,11 +34,14 @@ void Game::initVariables()
 {
     gameover = false;
 
-    mapSize = {2000.f, (float)window->getSize().y};
+    mapSize = sf::Vector2f(window->getSize().x, 0);
 }
 
 void Game::initMap(size_t mapId)
 {
+    enemiesVector.clear();
+    platformManager.clear();
+
     std::stringstream ss;
     ss<<"Assets/Data/level"<<mapId<<".txt";
     std::ifstream configFile(ss.str());
@@ -75,6 +76,11 @@ void Game::initMap(size_t mapId)
 
                 enemiesVector.push_back(Enemy(enemyParams));
             }
+            else if(type == "mapSize:")
+            {
+                configFile>>mapSize.x;
+                configFile>>mapSize.y;
+            }
             else
                 std::cout<<"Undefined type of data in config file\n";
         }
@@ -82,9 +88,10 @@ void Game::initMap(size_t mapId)
         configFile.close();
     }
     else
-    {
         std::cout<<"Brak pliku\n";
-    }
+
+    player1.reset({10,400}, mapSize);
+    mainView.setCenter(sf::Vector2f(window->getSize())/2.f);
 }
 
 void Game::pollevents()
@@ -102,6 +109,9 @@ void Game::pollevents()
             case sf::Keyboard::T:
                 initMap(1);
                 break;
+            case sf::Keyboard::Escape:
+                gameover=1;
+                break;
             default:
                 break;
             }
@@ -115,6 +125,12 @@ void Game::updateView()
 {
     if( (player1.getPosition().x + player1.getSize().x/2.f > window->getSize().x/2.f)  &&  (player1.getPosition().x + player1.getSize().x/2.f < mapSize.x - window->getSize().x/2.f) )
         mainView.move(player1.getPosition().x + player1.getSize().x/2.f - mainView.getCenter().x, 0);
+
+    if( (player1.getPosition().y + player1.getSize().y/2.f < window->getSize().y/2.f)  &&  (player1.getPosition().y + player1.getSize().y/2.f > mapSize.y + window->getSize().y/2.f) )
+         mainView.move(0, player1.getPosition().y + player1.getSize().y/2.f - mainView.getCenter().y);
+
+    if( player1.getPosition().y + player1.getSize().y == window->getSize().y)
+        mainView.setCenter(mainView.getCenter().x, window->getSize().y/2.f);
 
     window->setView(mainView);
 }
