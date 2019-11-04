@@ -9,6 +9,7 @@
 #include"Player.h"
 #include"PlatformsManager.h"
 #include"Enemy.h"
+#include"Menu.h"
 
 class Game
 {
@@ -50,6 +51,8 @@ class Game
 
         sf::View mainView;
         sf::Vector2f mapSize;
+
+        Menu* menu;
 
         ///platform Management
         PlatformsManager platformManager;

@@ -18,8 +18,9 @@ void Game::initWindow()
     sf::VideoMode videomode = sf::VideoMode::getDesktopMode();
 
     window = new sf::RenderWindow(videomode, "Platformer", sf::Style::Fullscreen);
-
     window->setFramerateLimit(60);
+
+    menu = new Menu(window->getSize());
 }
 
 void Game::initView()
@@ -110,7 +111,10 @@ void Game::pollevents()
                 initMap(1);
                 break;
             case sf::Keyboard::Escape:
-                gameover=1;
+                if(menu->getStatus() == Menu::hidden)
+                    menu->setStatus(Menu::main);
+                else
+                    menu->setStatus(Menu::hidden);
                 break;
             default:
                 break;
@@ -144,9 +148,15 @@ void Game::updateEnemies()
 void Game::update()
 {
     pollevents();
-    player1.update(*window,mainView, platformManager, gameover, enemiesVector);
-    updateEnemies();
+
+    if(menu->getStatus() == Menu::hidden)
+    {
+        player1.update(*window,mainView, platformManager, gameover, enemiesVector);
+        updateEnemies();
+    }
+
     updateView();
+    menu->update(*window,gameover);
 }
 
 void Game::renderEnemies()
@@ -162,6 +172,7 @@ void Game::render()
     platformManager.render(*window);
     renderEnemies();
     player1.render(*window);
+    menu->render(*window);
 
     window->display();
 }
