@@ -5,7 +5,7 @@ Game::Game()
     initWindow();
     initVariables();
     initView();
-    player1.reset({100.f,100.f}, mapSize);
+    initMap(1);
 }
 
 Game::~Game()
@@ -77,6 +77,19 @@ void Game::initMap(size_t mapId)
 
                 enemiesVector.push_back(Enemy(enemyParams));
             }
+            else if(type == "NPC:")
+            {
+                float npcParams[4];
+                for(size_t i=0; i<4 ;i++)
+                    configFile>>npcParams[i];
+
+                if(npcParams[2] == 0 && npcParams[3] == 0)
+                    npcVector.push_back(Npc(sf::Vector2f(npcParams[0],npcParams[1])));
+                else
+                    npcVector.push_back(Npc(sf::Vector2f(npcParams[0],npcParams[1]), sf::Vector2f(npcParams[2],npcParams[3])));
+
+                std::cout<<npcVector.size()<<"\n";
+            }
             else if(type == "mapSize:")
             {
                 configFile>>mapSize.x;
@@ -111,10 +124,7 @@ void Game::pollevents()
                 initMap(1);
                 break;
             case sf::Keyboard::Escape:
-                if(menu->getStatus() == Menu::hidden)
-                    menu->setStatus(Menu::main);
-                else
-                    menu->setStatus(Menu::hidden);
+                menu->open(mainView.getCenter() - sf::Vector2f(window->getSize())/2.f);
                 break;
             default:
                 break;
@@ -145,6 +155,12 @@ void Game::updateEnemies()
         enemiesVector[i].update();
 }
 
+void Game::updateNpc()
+{
+    for(size_t i=0; i<npcVector.size(); i++)
+        npcVector[i].update(player1);
+}
+
 void Game::update()
 {
     pollevents();
@@ -153,6 +169,7 @@ void Game::update()
     {
         player1.update(*window,mainView, platformManager, gameover, enemiesVector);
         updateEnemies();
+        updateNpc();
     }
 
     updateView();
@@ -165,12 +182,19 @@ void Game::renderEnemies()
         enemiesVector[i].render(*window);
 }
 
+void Game::renderNpc()
+{
+    for(size_t i=0; i<npcVector.size(); i++)
+        npcVector[i].render(*window);
+}
+
 void Game::render()
 {
     window->clear();
 
     platformManager.render(*window);
     renderEnemies();
+    renderNpc();
     player1.render(*window);
     menu->render(*window);
 

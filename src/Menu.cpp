@@ -46,7 +46,7 @@ void Menu::initText()
 
 void Menu::update(const sf::RenderWindow& window, bool& gameover)
 {
-    sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(window));
+    sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(window)) + dMove;
 
     switch(currentState)
     {
@@ -56,7 +56,7 @@ void Menu::update(const sf::RenderWindow& window, bool& gameover)
             resumeButton.setFillColor(sf::Color::Green);
 
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                currentState=hidden;
+                open(dMove);
         }
         else if(optionsButton.getGlobalBounds().contains(mousePos))
         {
@@ -112,4 +112,33 @@ size_t Menu::getStatus()
 void Menu::setStatus(size_t newStatus)
 {
     currentState = newStatus;
+}
+
+void Menu::setPosition(sf::Vector2f deltaMove)
+{
+    menuCanvas.move(deltaMove);
+
+    resumeButton.move(deltaMove);
+    optionsButton.move(deltaMove);
+    exitButton.move(deltaMove);
+
+    resumeText.move(deltaMove);
+    optionsText.move(deltaMove);
+    exitText.move(deltaMove);
+}
+
+void Menu::open(sf::Vector2f deltaMove)
+{
+    dMove = deltaMove;
+
+    if(currentState == Menu::hidden)
+    {
+        setPosition(deltaMove);
+        currentState = Menu::main;
+    }
+    else
+    {
+        setPosition(-deltaMove);
+        currentState = Menu::hidden;
+    }
 }

@@ -16,6 +16,9 @@ class Menu
         size_t getStatus();
         void setStatus(size_t newStatus);
 
+        void open(sf::Vector2f deltaMove);
+        void setPosition(sf::Vector2f deltaMove);
+
         enum state {hidden,main,options};
     private:
         ///Functions
@@ -24,6 +27,8 @@ class Menu
         ///Menu GUI
         sf::RectangleShape menuCanvas;
         size_t currentState;
+
+        sf::Vector2f dMove;
 
         ///Variables
         sf::Font font;

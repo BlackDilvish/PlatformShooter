@@ -272,5 +272,6 @@ void Player::render(sf::RenderTarget &window)
         window.draw(bulletsVector[i].bulletShape);
 }
 
-sf::Vector2f Player::getPosition()   {return playerShape.getPosition(); }
-sf::Vector2f Player::getSize()       {return playerShape.getSize();     }
+sf::Vector2f Player::getPosition()          {return playerShape.getPosition();       }
+sf::Vector2f Player::getSize()              {return playerShape.getSize();           }
+sf::FloatRect Player::getGlobalBounds()     {return playerShape.getGlobalBounds();   }

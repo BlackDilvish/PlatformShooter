@@ -9,6 +9,7 @@
 #include"Player.h"
 #include"PlatformsManager.h"
 #include"Enemy.h"
+#include"Npc.h"
 #include"Menu.h"
 
 class Game
@@ -38,9 +39,11 @@ class Game
         void pollevents();
         void updateView();
         void updateEnemies();
+        void updateNpc();
 
         ///renders
         void renderEnemies();
+        void renderNpc();
 
 
     ///-----VARIABLES-----///
@@ -62,6 +65,9 @@ class Game
 
         ///Enemies
         std::vector<Enemy> enemiesVector;
+
+        ///Npcs
+        std::vector<Npc> npcVector;
 
         ///Mouse
         sf::Vector2f mousePos;

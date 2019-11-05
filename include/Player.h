@@ -22,6 +22,7 @@ class Player
         void reset(sf::Vector2f pos,sf::Vector2f mapSize);
         sf::Vector2f getSize();
         sf::Vector2f getPosition();
+        sf::FloatRect getGlobalBounds();
     protected:
 
     private:
