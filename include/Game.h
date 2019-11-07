@@ -57,6 +57,9 @@ class Game
 
         Menu* menu;
 
+        ///Text
+        sf::Font defaultFont;
+
         ///platform Management
         PlatformsManager platformManager;
 

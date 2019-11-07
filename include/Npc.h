@@ -11,15 +11,19 @@ class Npc
         Npc(sf::Vector2f Position,const sf::Vector2f size = {90.f,90.f});
         virtual ~Npc();
 
-        void update(Player& player);
+        void update(sf::RenderWindow& window, Player& player, sf::Vector2f& deltaMove);
         void render(sf::RenderTarget& window);
+
+        void initText(sf::Font& font);
         void popMessageBox(std::string message);
+        void popDialogBox();
 
     private:
 
-        sf::RectangleShape shape;
+        void updateInteractionIcons(sf::Vector2f& mousePos);
+        void updateDialogBox(sf::Vector2f& mousePos);
 
-        sf::Font font;
+        sf::RectangleShape shape;
 
         struct MessBox
         {
@@ -28,11 +32,22 @@ class Npc
             bool isDisplayed;
         }MessageBox;
 
+        struct DialBox : public MessBox
+        {
+            sf::RectangleShape nextPage;
+            int useLimit;
+        }DialogBox;
+
+        size_t numberOfPages;
+        size_t currentPage;
+        std::vector<std::string> messegesVector;
+
         struct interIcon
         {
             sf::RectangleShape icon;
             bool isDisplayed;
-        }interactionIcon;
+            int useLimit;
+        }interactionIcon, dialogIcon;
 };
 
 #endif // NPC_H

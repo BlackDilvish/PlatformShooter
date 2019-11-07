@@ -36,6 +36,8 @@ void Game::initVariables()
     gameover = false;
 
     mapSize = sf::Vector2f(window->getSize().x, 0);
+
+    defaultFont.loadFromFile("Assets/Fonts/Lato.ttf");
 }
 
 void Game::initMap(size_t mapId)
@@ -55,7 +57,6 @@ void Game::initMap(size_t mapId)
         {
             if(type == "platform:")
             {
-                std::cout<<"Platform Loaded\n";
                 float platformParams[4];
                 for(size_t i=0; i<4 ;i++)
                      configFile>>platformParams[i];
@@ -88,7 +89,7 @@ void Game::initMap(size_t mapId)
                 else
                     npcVector.push_back(Npc(sf::Vector2f(npcParams[0],npcParams[1]), sf::Vector2f(npcParams[2],npcParams[3])));
 
-                std::cout<<npcVector.size()<<"\n";
+                npcVector[npcVector.size() -1].initText(defaultFont);
             }
             else if(type == "mapSize:")
             {
@@ -157,8 +158,10 @@ void Game::updateEnemies()
 
 void Game::updateNpc()
 {
+    sf::Vector2f deltaMove = mainView.getCenter() - sf::Vector2f(window->getSize())/2.f;
+
     for(size_t i=0; i<npcVector.size(); i++)
-        npcVector[i].update(player1);
+        npcVector[i].update(*window, player1, deltaMove);
 }
 
 void Game::update()
