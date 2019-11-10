@@ -38,10 +38,10 @@ void Player::initPlayer()
     tempBullet.periodOfLife = 2.f;
     tempBullet.lifeTimer = 0;
 
-    runAnimationRight = new Animation("Assets/Images/MageRun.png",5,{978, 1127},playerShape.getSize(),0.08f,true,false);
-    runAnimationLeft = new Animation("Assets/Images/MageRun.png",5,{978, 1127},playerShape.getSize(),0.08f,true,true);
-    idleAnimationRight = new Animation("Assets/Images/MageStands.png",5,{867, 1059},playerShape.getSize(),0.15f,true,false);
-    idleAnimationLeft = new Animation("Assets/Images/MageStands.png",5,{867, 1059},playerShape.getSize(),0.15f,true,true);
+    runAnimationRight = new Animation((char*)"Assets/Images/MageRun.png",5,{978, 1127},playerShape.getSize(),0.08f,true,false);
+    runAnimationLeft = new Animation((char*)"Assets/Images/MageRun.png",5,{978, 1127},playerShape.getSize(),0.08f,true,true);
+    idleAnimationRight = new Animation((char*)"Assets/Images/MageStands.png",5,{867, 1059},playerShape.getSize(),0.15f,true,false);
+    idleAnimationLeft = new Animation((char*)"Assets/Images/MageStands.png",5,{867, 1059},playerShape.getSize(),0.15f,true,true);
 }
 
 void Player::reset(sf::Vector2f pos,sf::Vector2f mapSize)
@@ -94,10 +94,12 @@ void Player::updateInput()
             runAnimationRight->update();
     }
     else if(!inSpace)
+    {
         if(previousDirection)
             idleAnimationRight->update();
         else
             idleAnimationLeft->update();
+    }
 
     playerShape.move(velocity);
     if(collidingTop)
@@ -146,20 +148,23 @@ void Player::updateShooting(sf::RenderWindow& window, sf::View view)
 
 }
 
-void Player::updateEnemiesInteraction(std::vector<Enemy> &enemiesVector)
+void Player::updateEnemiesInteraction(std::vector<Goblin*> &enemiesVector)
 {
     for(size_t i=0; i<enemiesVector.size(); i++)
     {
-        if(playerShape.getGlobalBounds().intersects(enemiesVector[i].getGlobalBounds()))
+        if(playerShape.getGlobalBounds().intersects(enemiesVector[i]->getGlobalBounds()))
             std::cout<<"Kolizja! Zrobie pozniej";
 
         for(size_t j=0; j<bulletsVector.size(); j++)
-            if(bulletsVector[j].bulletShape.getGlobalBounds().intersects(enemiesVector[i].getGlobalBounds()))
+            if(bulletsVector[j].bulletShape.getGlobalBounds().intersects(enemiesVector[i]->getGlobalBounds()))
             {
-                if(enemiesVector[i].getHP() > 1)
-                    enemiesVector[i].setHP(enemiesVector[i].getHP() - 1);
+                if(enemiesVector[i]->getHP() > 1)
+                    enemiesVector[i]->setHP(enemiesVector[i]->getHP() - 1);
                 else
+                {
+                    delete enemiesVector[i];
                     enemiesVector.erase(enemiesVector.begin() + i);
+                }
 
                 bulletsVector.erase(bulletsVector.begin() + j);
 
@@ -246,7 +251,7 @@ void Player::updatePlatformCollisions(PlatformsManager Pman)
 }
 
 
-void Player::update(sf::RenderWindow &window,sf::View view,PlatformsManager Pman,bool &gameOver,std::vector<Enemy> &enemiesVector)
+void Player::update(sf::RenderWindow &window,sf::View view,PlatformsManager Pman,bool &gameOver,std::vector<Goblin*> &enemiesVector)
 {
     updateTime();
     updateInput();

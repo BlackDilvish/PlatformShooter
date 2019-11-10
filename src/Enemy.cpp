@@ -11,6 +11,7 @@ Enemy::Enemy(sf::RectangleShape &platform)
     speed = 5.f;
 
     initVariables();
+
 }
 
 Enemy::Enemy(const sf::Vector2f &Position,const sf::Vector2f &Range)
@@ -42,6 +43,15 @@ Enemy::~Enemy()
     //dtor
 }
 
+void Enemy::freeAnimation()
+{
+    if(walkAnimationRight != nullptr)
+        delete walkAnimationRight;
+
+    if(walkAnimationLeft != nullptr)
+        delete walkAnimationLeft;
+}
+
 void Enemy::initVariables()
 {
     enemyShape.setFillColor(sf::Color::Blue);
@@ -56,6 +66,29 @@ void Enemy::initVariables()
 
     maxHP = 3;
     currHP = maxHP;
+
+    walkAnimationRight = nullptr;
+    walkAnimationLeft = nullptr;
+}
+
+void Enemy::setAnimation(char* path,size_t numberOfFrames,sf::Vector2f sizeOfFrame,float cooldown)
+{
+    walkAnimationRight = new Animation(path, numberOfFrames, sizeOfFrame, enemyShape.getSize(), cooldown, true, false);
+    walkAnimationLeft = new Animation(path, numberOfFrames, sizeOfFrame, enemyShape.getSize(), cooldown, true, true);
+}
+
+void Enemy::updateAnimations()
+{
+    if(walkAnimationRight != nullptr && walkAnimationLeft != nullptr)
+    {
+        if(speed>0)
+            walkAnimationRight->update();
+        else
+            walkAnimationLeft->update();
+
+        walkAnimationRight->setPosition(enemyShape.getPosition());
+        walkAnimationLeft->setPosition(enemyShape.getPosition());
+    }
 }
 
 void Enemy::update()
@@ -67,11 +100,24 @@ void Enemy::update()
 
     redHealthBar.setPosition(enemyShape.getPosition());
     greenHealthBar.setPosition(enemyShape.getPosition());
+
+    updateAnimations();
+}
+
+void Enemy::renderAnimations(sf::RenderTarget& window)
+{
+    if(walkAnimationRight != nullptr && walkAnimationLeft != nullptr)
+    {
+        if(speed > 0)
+            walkAnimationRight->render(window);
+        else
+            walkAnimationLeft->render(window);
+    }
 }
 
 void Enemy::render(sf::RenderTarget& window)
 {
-    window.draw(enemyShape);
+    renderAnimations(window);
 
     window.draw(redHealthBar);
     window.draw(greenHealthBar);

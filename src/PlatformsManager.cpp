@@ -15,6 +15,7 @@ void PlatformsManager::addPlatform(sf::Vector2f size, sf::Vector2f pos)
     sf::RectangleShape tempPlatform;
     tempPlatform.setSize(size);
     tempPlatform.setPosition(pos);
+    tempPlatform.setFillColor(sf::Color::Green);
 
     platformsVector.push_back(tempPlatform);
 }
@@ -24,6 +25,7 @@ void PlatformsManager::addPlatform(float *platformParams)
     sf::RectangleShape tempPlatform;
     tempPlatform.setSize(sf::Vector2f(platformParams[0],platformParams[1]));
     tempPlatform.setPosition(sf::Vector2f(platformParams[2],platformParams[3]));
+    tempPlatform.setFillColor(sf::Color::Green);
 
     platformsVector.push_back(tempPlatform);
 }

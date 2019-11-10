@@ -32,20 +32,13 @@ Npc::Npc(sf::Vector2f Position,const sf::Vector2f size)
     DialogBox.nextPage.setFillColor(sf::Color::Yellow);
     DialogBox.nextPage.setPosition(DialogBox.canvas.getPosition() + DialogBox.canvas.getSize() - DialogBox.nextPage.getSize());
     DialogBox.useLimit = 0;
-
-    numberOfPages = 3;
-    currentPage = 0;
-    messegesVector.push_back("test1");
-    messegesVector.push_back("test2");
-    messegesVector.push_back("test3");
-
 }
 
 Npc::~Npc()
 {
 }
 
-void Npc::initText(sf::Font& font)
+void Npc::initText(sf::Font& font, std::vector<std::string>& npcMessages)
 {
     MessageBox.messageText.setFont(font);
     MessageBox.messageText.setPosition(MessageBox.canvas.getPosition());
@@ -54,6 +47,12 @@ void Npc::initText(sf::Font& font)
     DialogBox.messageText.setFont(font);
     DialogBox.messageText.setPosition(DialogBox.canvas.getPosition());
     DialogBox.messageText.setString("");
+
+    numberOfPages = npcMessages.size();
+    currentPage = 0;
+    for(size_t i=0; i<numberOfPages; i++)
+        messegesVector.push_back(npcMessages[i]);
+
 }
 
 void Npc::popMessageBox(std::string message="")

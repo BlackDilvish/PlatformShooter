@@ -14,7 +14,7 @@ class Npc
         void update(sf::RenderWindow& window, Player& player, sf::Vector2f& deltaMove);
         void render(sf::RenderTarget& window);
 
-        void initText(sf::Font& font);
+        void initText(sf::Font& font, std::vector<std::string>& npcMessages);
         void popMessageBox(std::string message);
         void popDialogBox();
 

@@ -4,12 +4,15 @@ Game::Game()
 {
     initWindow();
     initVariables();
+    initImages();
     initView();
-    initMap(1);
+    initMap(currentLevel);
 }
 
 Game::~Game()
 {
+    freeEnemies();
+
     delete window;
 }
 
@@ -34,15 +37,24 @@ void Game::initView()
 void Game::initVariables()
 {
     gameover = false;
+    currentLevel = 1;
 
     mapSize = sf::Vector2f(window->getSize().x, 0);
 
     defaultFont.loadFromFile("Assets/Fonts/Lato.ttf");
 }
 
+void Game::initImages()
+{
+    forest1Texture.loadFromFile("Assets/Images/forest1Background.png");
+
+    mapSprite[0].setTexture(forest1Texture);
+}
+
 void Game::initMap(size_t mapId)
 {
-    enemiesVector.clear();
+    currentLevel = mapId;
+    freeEnemies();
     platformManager.clear();
 
     std::stringstream ss;
@@ -68,7 +80,8 @@ void Game::initMap(size_t mapId)
                 int platformId;
                 configFile>>platformId;
 
-                enemiesVector.push_back(Enemy(platformManager[platformId]));
+                Goblin* temp = new Goblin(platformManager[platformId]);
+                enemiesVector.push_back(temp);
             }
             else if(type == "enemyFree:")
             {
@@ -76,11 +89,16 @@ void Game::initMap(size_t mapId)
                 for(size_t i=0; i<4 ;i++)
                      configFile>>enemyParams[i];
 
-                enemiesVector.push_back(Enemy(enemyParams));
+                Goblin* temp = new Goblin(enemyParams);
+                enemiesVector.push_back(temp);
             }
             else if(type == "NPC:")
             {
+                std::vector<std::string> messagesNPC;
+                std::string tempMessage;
+                int count;
                 float npcParams[4];
+
                 for(size_t i=0; i<4 ;i++)
                     configFile>>npcParams[i];
 
@@ -89,7 +107,20 @@ void Game::initMap(size_t mapId)
                 else
                     npcVector.push_back(Npc(sf::Vector2f(npcParams[0],npcParams[1]), sf::Vector2f(npcParams[2],npcParams[3])));
 
-                npcVector[npcVector.size() -1].initText(defaultFont);
+                configFile>>count;
+                for(int i=0; i<count; i++)
+                {
+                    configFile>>tempMessage;
+
+                    ///Replacing underlines with spaces
+                    for(size_t j=0; j<tempMessage.length(); j++)
+                        if(tempMessage[j] == '_')
+                            tempMessage[j] = ' ';
+
+                    messagesNPC.push_back(tempMessage);
+                }
+
+                npcVector[npcVector.size() -1].initText(defaultFont, messagesNPC);
             }
             else if(type == "mapSize:")
             {
@@ -107,6 +138,12 @@ void Game::initMap(size_t mapId)
 
     player1.reset({10,400}, mapSize);
     mainView.setCenter(sf::Vector2f(window->getSize())/2.f);
+    setScene(currentLevel, sf::Vector2f(0, mapSize.y));
+}
+
+void Game::setScene(size_t lvl,const sf::Vector2f& pos)
+{
+    mapSprite[lvl-1].setPosition(pos);
 }
 
 void Game::pollevents()
@@ -153,7 +190,7 @@ void Game::updateView()
 void Game::updateEnemies()
 {
     for(size_t i=0; i<enemiesVector.size(); i++)
-        enemiesVector[i].update();
+        enemiesVector[i]->update();
 }
 
 void Game::updateNpc()
@@ -179,10 +216,22 @@ void Game::update()
     menu->update(*window,gameover);
 }
 
+void Game::renderImages()
+{
+    switch(currentLevel)
+    {
+    case 1:
+        window->draw(mapSprite[0]);
+        break;
+    default:
+        break;
+    }
+}
+
 void Game::renderEnemies()
 {
     for(size_t i=0; i<enemiesVector.size();i++)
-        enemiesVector[i].render(*window);
+        enemiesVector[i]->render(*window);
 }
 
 void Game::renderNpc()
@@ -195,6 +244,7 @@ void Game::render()
 {
     window->clear();
 
+    renderImages();
     platformManager.render(*window);
     renderEnemies();
     renderNpc();
@@ -202,6 +252,14 @@ void Game::render()
     menu->render(*window);
 
     window->display();
+}
+
+void Game::freeEnemies()
+{
+    for(size_t i=0; i<enemiesVector.size(); i++)
+        delete enemiesVector[i];
+
+    enemiesVector.clear();
 }
 
 const bool Game::isPlaying()

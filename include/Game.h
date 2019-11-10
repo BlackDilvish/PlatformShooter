@@ -9,6 +9,7 @@
 #include"Player.h"
 #include"PlatformsManager.h"
 #include"Enemy.h"
+#include"Goblin.h"
 #include"Npc.h"
 #include"Menu.h"
 
@@ -32,8 +33,10 @@ class Game
         ///initializes
         void initWindow();
         void initVariables();
+        void initImages();
         void initView();
-        void initMap(size_t mapId);
+        void initMap(size_t lvl);
+        void setScene(size_t lvl,const sf::Vector2f& pos);
 
         ///updates
         void pollevents();
@@ -42,14 +45,20 @@ class Game
         void updateNpc();
 
         ///renders
+        void renderImages();
         void renderEnemies();
         void renderNpc();
+
+        ///free
+        void freeEnemies();
 
 
     ///-----VARIABLES-----///
 
         ///window and view
         sf::RenderWindow *window;
+
+        size_t currentLevel;
         bool gameover;
 
         sf::View mainView;
@@ -67,13 +76,18 @@ class Game
         Player player1;
 
         ///Enemies
-        std::vector<Enemy> enemiesVector;
+        std::vector<Goblin*> enemiesVector;
 
         ///Npcs
         std::vector<Npc> npcVector;
 
         ///Mouse
         sf::Vector2f mousePos;
+
+        ///Backgrounds
+        sf::Texture forest1Texture;
+
+        sf::Sprite mapSprite[2];
 };
 
 #endif // GAME_H

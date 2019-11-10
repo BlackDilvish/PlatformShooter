@@ -5,6 +5,7 @@
 #include<iostream>
 #include<vector>
 #include"PlatformsManager.h"
+#include"Animation.h"
 
 
 class Enemy
@@ -23,6 +24,10 @@ class Enemy
 
         void setHP(size_t newHP);
     protected:
+        void setAnimation(char* path,size_t numberOfFrames,sf::Vector2f sizeOfFrame,float cooldown);
+        void updateAnimations();
+        void renderAnimations(sf::RenderTarget& window);
+        void freeAnimation();
 
     private:
         void initVariables();
@@ -35,6 +40,9 @@ class Enemy
         sf::RectangleShape greenHealthBar;
         size_t maxHP;
         size_t currHP;
+
+        Animation* walkAnimationRight;
+        Animation* walkAnimationLeft;
 
 };
 

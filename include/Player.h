@@ -8,6 +8,7 @@
 #include<math.h>
 #include"PlatformsManager.h"
 #include"Enemy.h"
+#include"Goblin.h"
 #include"Animation.h"
 
 class Player
@@ -17,7 +18,7 @@ class Player
         virtual ~Player();
 
         void render(sf::RenderTarget &window);
-        void update(sf::RenderWindow &window, sf::View view,PlatformsManager Pman,bool &gameOver,std::vector<Enemy> &enemiesVector);
+        void update(sf::RenderWindow &window, sf::View view,PlatformsManager Pman,bool &gameOver,std::vector<Goblin*> &enemiesVector);
 
         void reset(sf::Vector2f pos,sf::Vector2f mapSize);
         sf::Vector2f getSize();
@@ -31,7 +32,7 @@ class Player
         void updateInput();
         void updateTime();
         void updateShooting(sf::RenderWindow& window, sf::View view);
-        void updateEnemiesInteraction(std::vector<Enemy> &enemiesVector);
+        void updateEnemiesInteraction(std::vector<Goblin*> &enemiesVector);
         void updateWindowCollisions();
         void updatePlatformCollisions(PlatformsManager Pman);
 
