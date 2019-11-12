@@ -12,6 +12,8 @@ Game::Game()
 Game::~Game()
 {
     freeEnemies();
+    freeNpc();
+    freeObjects();
 
     delete window;
 }
@@ -55,6 +57,8 @@ void Game::initMap(size_t mapId)
 {
     currentLevel = mapId;
     freeEnemies();
+    freeNpc();
+    freeObjects();
     platformManager.clear();
 
     std::stringstream ss;
@@ -75,7 +79,7 @@ void Game::initMap(size_t mapId)
 
                 platformManager.addPlatform(platformParams);
             }
-            else if(type == "enemyOnPlatform:")
+            else if(type == "Goblin(Platform):")
             {
                 int platformId;
                 configFile>>platformId;
@@ -83,7 +87,7 @@ void Game::initMap(size_t mapId)
                 Goblin* temp = new Goblin(platformManager[platformId]);
                 enemiesVector.push_back(temp);
             }
-            else if(type == "enemyFree:")
+            else if(type == "Goblin:")
             {
                 float enemyParams[4];
                 for(size_t i=0; i<4 ;i++)
@@ -92,7 +96,7 @@ void Game::initMap(size_t mapId)
                 Goblin* temp = new Goblin(enemyParams);
                 enemiesVector.push_back(temp);
             }
-            else if(type == "NPC:")
+            else if(type == "BlackSmith:")
             {
                 std::vector<std::string> messagesNPC;
                 std::string tempMessage;
@@ -103,9 +107,15 @@ void Game::initMap(size_t mapId)
                     configFile>>npcParams[i];
 
                 if(npcParams[2] == 0 && npcParams[3] == 0)
-                    npcVector.push_back(Npc(sf::Vector2f(npcParams[0],npcParams[1])));
+                {
+                    Blacksmith* temp = new Blacksmith(sf::Vector2f(npcParams[0],npcParams[1]));
+                    blacksmithVector.push_back(temp);
+                }
                 else
-                    npcVector.push_back(Npc(sf::Vector2f(npcParams[0],npcParams[1]), sf::Vector2f(npcParams[2],npcParams[3])));
+                {
+                    Blacksmith* temp = new Blacksmith(sf::Vector2f(npcParams[0],npcParams[1]), sf::Vector2f(npcParams[2],npcParams[3]));
+                    blacksmithVector.push_back(temp);
+                }
 
                 configFile>>count;
                 for(int i=0; i<count; i++)
@@ -120,7 +130,18 @@ void Game::initMap(size_t mapId)
                     messagesNPC.push_back(tempMessage);
                 }
 
-                npcVector[npcVector.size() -1].initText(defaultFont, messagesNPC);
+                blacksmithVector[blacksmithVector.size() -1]->initText(defaultFont, messagesNPC);
+            }
+            else if(type == "Doors:")
+            {
+                float objParams[4];
+                size_t scene;
+                for(int i=0; i<4; i++)
+                    configFile>>objParams[i];
+                configFile>>scene;
+
+                Object_Doors* temp = new Object_Doors({objParams[0], objParams[1]}, {objParams[2], objParams[3]}, scene);
+                doorsVector.push_back(temp);
             }
             else if(type == "mapSize:")
             {
@@ -197,8 +218,19 @@ void Game::updateNpc()
 {
     sf::Vector2f deltaMove = mainView.getCenter() - sf::Vector2f(window->getSize())/2.f;
 
-    for(size_t i=0; i<npcVector.size(); i++)
-        npcVector[i].update(*window, player1, deltaMove);
+    for(size_t i=0; i<blacksmithVector.size(); i++)
+        blacksmithVector[i]->update(*window, player1, deltaMove);
+}
+
+void Game::updateObjects()
+{
+    for(size_t i=0; i<doorsVector.size(); i++)
+    {
+        doorsVector[i]->update(player1);
+
+        if(doorsVector[i]->getOpenStatus())
+            initMap(doorsVector[i]->getScene());
+    }
 }
 
 void Game::update()
@@ -210,6 +242,7 @@ void Game::update()
         player1.update(*window,mainView, platformManager, gameover, enemiesVector);
         updateEnemies();
         updateNpc();
+        updateObjects();
     }
 
     updateView();
@@ -236,8 +269,14 @@ void Game::renderEnemies()
 
 void Game::renderNpc()
 {
-    for(size_t i=0; i<npcVector.size(); i++)
-        npcVector[i].render(*window);
+    for(size_t i=0; i<blacksmithVector.size(); i++)
+        blacksmithVector[i]->render(*window);
+}
+
+void Game::renderObjects()
+{
+    for(size_t i=0; i<doorsVector.size(); i++)
+        doorsVector[i]->render(*window);
 }
 
 void Game::render()
@@ -248,6 +287,7 @@ void Game::render()
     platformManager.render(*window);
     renderEnemies();
     renderNpc();
+    renderObjects();
     player1.render(*window);
     menu->render(*window);
 
@@ -260,6 +300,22 @@ void Game::freeEnemies()
         delete enemiesVector[i];
 
     enemiesVector.clear();
+}
+
+void Game::freeNpc()
+{
+    for(size_t i=0; i<blacksmithVector.size(); i++)
+        delete blacksmithVector[i];
+
+    blacksmithVector.clear();
+}
+
+void Game::freeObjects()
+{
+    for(size_t i=0; i<doorsVector.size(); i++)
+        delete doorsVector[i];
+
+    doorsVector.clear();
 }
 
 const bool Game::isPlaying()

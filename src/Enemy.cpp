@@ -8,7 +8,7 @@ Enemy::Enemy(sf::RectangleShape &platform)
 
     movingRange.x = platform.getPosition().x;
     movingRange.y = platform.getPosition().x + platform.getSize().x;
-    speed = 5.f;
+    speed = 3.f;
 
     initVariables();
 
@@ -21,7 +21,7 @@ Enemy::Enemy(const sf::Vector2f &Position,const sf::Vector2f &Range)
     enemyShape.setFillColor(sf::Color::Red);
 
     movingRange = Range;
-    speed = 5.f;
+    speed = 3.f;
 
     initVariables();
 }
@@ -33,7 +33,7 @@ Enemy::Enemy(float *enemyParams)
     enemyShape.setFillColor(sf::Color::Red);
 
     movingRange = {enemyParams[2], enemyParams[3]};
-    speed = 5.f;
+    speed = 3.f;
 
     initVariables();
 }

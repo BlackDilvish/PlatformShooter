@@ -5,7 +5,8 @@ platform: 300.0 50.0 1700.0 800.0
 platform: 200.0 100.0 1500.0 400.0
 platform: 300.0 100.0 1700.0 200.0
 platform: 150.0 650.0 1750.0 200.0
-enemyOnPlatform: 1
-enemyFree: 1600.0 300.0 1600.0 1800.0
-NPC: 1600.0 1000.0 120.0 100.0 3 Wiadomosc_1 Wiadomosc_2 Wiadomosc_3
-NPC: 1800.0 1000.0 0 0 2 Info_1 Info_2
+Goblin(Platform): 1
+Goblin: 1600.0 300.0 1600.0 1800.0
+BlackSmith: 1600.0 950.0 120.0 100.0 3 Wiadomosc_1 Wiadomosc_2 Wiadomosc_3
+BlackSmith: 1800.0 1000.0 0 0 2 Info_1 Info_2
+Doors: 1400.0 1000.0 80.0 100.0 1

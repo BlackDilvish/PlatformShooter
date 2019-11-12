@@ -18,12 +18,19 @@ class Npc
         void popMessageBox(std::string message);
         void popDialogBox();
 
+    protected:
+        void setAnimation(char* path,size_t numberOfFrames,sf::Vector2f sizeOfFrame,float cooldown);
+        void updateAnimations();
+        void renderAnimations(sf::RenderTarget& window);
+        void freeAnimation();
+
     private:
 
         void updateInteractionIcons(sf::Vector2f& mousePos);
         void updateDialogBox(sf::Vector2f& mousePos);
 
         sf::RectangleShape shape;
+        Animation* idleAnimation;
 
         struct MessBox
         {

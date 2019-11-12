@@ -11,7 +11,10 @@
 #include"Enemy.h"
 #include"Goblin.h"
 #include"Npc.h"
+#include"Blacksmith.h"
 #include"Menu.h"
+#include"InteractionObject.h"
+#include"Object_Doors.h"
 
 class Game
 {
@@ -43,14 +46,18 @@ class Game
         void updateView();
         void updateEnemies();
         void updateNpc();
+        void updateObjects();
 
         ///renders
         void renderImages();
         void renderEnemies();
         void renderNpc();
+        void renderObjects();
 
         ///free
         void freeEnemies();
+        void freeNpc();
+        void freeObjects();
 
 
     ///-----VARIABLES-----///
@@ -78,8 +85,11 @@ class Game
         ///Enemies
         std::vector<Goblin*> enemiesVector;
 
-        ///Npcs
-        std::vector<Npc> npcVector;
+        ///Npc
+        std::vector<Blacksmith*> blacksmithVector;
+
+        ///Objects
+        std::vector<Object_Doors*> doorsVector;
 
         ///Mouse
         sf::Vector2f mousePos;

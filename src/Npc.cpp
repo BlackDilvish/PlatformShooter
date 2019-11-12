@@ -36,6 +36,13 @@ Npc::Npc(sf::Vector2f Position,const sf::Vector2f size)
 
 Npc::~Npc()
 {
+
+}
+
+void Npc::setAnimation(char* path,size_t numberOfFrames,sf::Vector2f sizeOfFrame,float cooldown)
+{
+    idleAnimation = new Animation(path, numberOfFrames, sizeOfFrame, shape.getSize(), cooldown, true, false);
+    idleAnimation->setPosition(shape.getPosition());
 }
 
 void Npc::initText(sf::Font& font, std::vector<std::string>& npcMessages)
@@ -141,15 +148,25 @@ void Npc::updateDialogBox(sf::Vector2f& mousePos)
         DialogBox.useLimit += 1;
 }
 
+void Npc::updateAnimations()
+{
+    idleAnimation->update();
+}
+
 void Npc::update(sf::RenderWindow& window, Player& player, sf::Vector2f& deltaMove)
 {
     sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(window)) + deltaMove;
 
-    if(shape.getGlobalBounds().intersects(player.getGlobalBounds()) && !interactionIcon.isDisplayed)
+    if(shape.getGlobalBounds().intersects(player.getGlobalBounds()))
     {
-        interactionIcon.isDisplayed = true;
-        dialogIcon.isDisplayed = true;
+        if(!interactionIcon.isDisplayed)
+        {
+            interactionIcon.isDisplayed = true;
+            dialogIcon.isDisplayed = true;
+        }
     }
+    else
+        updateAnimations();
 
     if(!shape.getGlobalBounds().intersects(player.getGlobalBounds()) && interactionIcon.isDisplayed)
     {
@@ -164,9 +181,14 @@ void Npc::update(sf::RenderWindow& window, Player& player, sf::Vector2f& deltaMo
 
 }
 
+void Npc::renderAnimations(sf::RenderTarget& window)
+{
+    idleAnimation->render(window);
+}
+
 void Npc::render(sf::RenderTarget& window)
 {
-    window.draw(shape);
+    renderAnimations(window);
 
     if(interactionIcon.isDisplayed)
         window.draw(interactionIcon.icon);
@@ -185,4 +207,9 @@ void Npc::render(sf::RenderTarget& window)
         window.draw(DialogBox.messageText);
         window.draw(DialogBox.nextPage);
     }
+}
+
+void Npc::freeAnimation()
+{
+    delete idleAnimation;
 }
