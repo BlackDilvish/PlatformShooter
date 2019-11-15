@@ -18,7 +18,7 @@ class Player
         virtual ~Player();
 
         void render(sf::RenderTarget &window);
-        void update(sf::RenderWindow &window, sf::View view,PlatformsManager Pman,bool &gameOver,std::vector<Goblin*> &enemiesVector);
+        void update(sf::RenderWindow &window, sf::View view,bool &gameOver,std::vector<Enemy*> &enemiesVector);
 
         void reset(sf::Vector2f pos,sf::Vector2f mapSize);
         sf::Vector2f getSize();
@@ -32,9 +32,9 @@ class Player
         void updateInput();
         void updateTime();
         void updateShooting(sf::RenderWindow& window, sf::View view);
-        void updateEnemiesInteraction(std::vector<Goblin*> &enemiesVector);
+        void updateEnemiesInteraction(std::vector<Enemy*> &enemiesVector);
         void updateWindowCollisions();
-        void updatePlatformCollisions(PlatformsManager Pman);
+        void updatePlatformCollisions();
 
         ///Variables
         sf::Vector2f velocity;

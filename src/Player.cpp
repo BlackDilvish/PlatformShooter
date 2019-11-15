@@ -148,7 +148,7 @@ void Player::updateShooting(sf::RenderWindow& window, sf::View view)
 
 }
 
-void Player::updateEnemiesInteraction(std::vector<Goblin*> &enemiesVector)
+void Player::updateEnemiesInteraction(std::vector<Enemy*> &enemiesVector)
 {
     for(size_t i=0; i<enemiesVector.size(); i++)
     {
@@ -194,16 +194,18 @@ void Player::updateWindowCollisions()
         playerShape.setPosition(currentMapSize.x - playerBounds.width, playerBounds.top);
 }
 
-void Player::updatePlatformCollisions(PlatformsManager Pman)
+void Player::updatePlatformCollisions()
 {
+
+
     sf::FloatRect playerBounds=playerShape.getGlobalBounds();
     collidingTop=false;
 
-    for(size_t i=0;i<Pman.getSize();i++)
+    for(size_t i=0;i<PlatformsManager::getSize();i++)
     {
-        if(playerShape.getGlobalBounds().intersects(Pman[i].getGlobalBounds()))
+        if(playerShape.getGlobalBounds().intersects(PlatformsManager::getPlatform(i).getGlobalBounds()))
         {
-            sf::FloatRect wallBounds=Pman[i].getGlobalBounds();
+            sf::FloatRect wallBounds=PlatformsManager::getPlatform(i).getGlobalBounds();
 
             if(playerBounds.left<wallBounds.left
                && playerBounds.left+playerBounds.width<wallBounds.left+wallBounds.width
@@ -251,14 +253,14 @@ void Player::updatePlatformCollisions(PlatformsManager Pman)
 }
 
 
-void Player::update(sf::RenderWindow &window,sf::View view,PlatformsManager Pman,bool &gameOver,std::vector<Goblin*> &enemiesVector)
+void Player::update(sf::RenderWindow &window,sf::View view,bool &gameOver,std::vector<Enemy*> &enemiesVector)
 {
     updateTime();
     updateInput();
     updateWindowCollisions();
     updateShooting(window,view);
     updateEnemiesInteraction(enemiesVector);
-    updatePlatformCollisions(Pman);
+    updatePlatformCollisions();
 }
 
 void Player::render(sf::RenderTarget &window)

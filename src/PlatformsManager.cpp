@@ -36,7 +36,7 @@ void PlatformsManager::render(sf::RenderTarget &window)
         window.draw(platformsVector[i]);
 }
 
-sf::RectangleShape& PlatformsManager::operator[](size_t id)
+sf::RectangleShape& PlatformsManager::getPlatform(size_t id)
 {
     return platformsVector[id];
 }
@@ -55,3 +55,5 @@ size_t PlatformsManager::getSize()
 {
     return platformsVector.size();
 }
+
+std::vector<sf::RectangleShape> PlatformsManager::platformsVector;

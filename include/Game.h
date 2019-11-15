@@ -10,6 +10,7 @@
 #include"PlatformsManager.h"
 #include"Enemy.h"
 #include"Goblin.h"
+#include"Orc.h"
 #include"Npc.h"
 #include"Blacksmith.h"
 #include"Menu.h"
@@ -76,17 +77,14 @@ class Game
         ///Text
         sf::Font defaultFont;
 
-        ///platform Management
-        PlatformsManager platformManager;
-
         ///players
         Player player1;
 
         ///Enemies
-        std::vector<Goblin*> enemiesVector;
+        std::vector<Enemy*> enemiesVector;
 
         ///Npc
-        std::vector<Blacksmith*> blacksmithVector;
+        std::vector<Npc*> npcVector;
 
         ///Objects
         std::vector<Object_Doors*> doorsVector;

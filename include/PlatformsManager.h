@@ -10,19 +10,19 @@ class PlatformsManager
         PlatformsManager();
         virtual ~PlatformsManager();
 
-        void addPlatform(sf::Vector2f size, sf::Vector2f pos);
-        void addPlatform(float *platformParams);
-        void render(sf::RenderTarget &window);
+        static void addPlatform(sf::Vector2f size, sf::Vector2f pos);
+        static void addPlatform(float *platformParams);
+        static void render(sf::RenderTarget &window);
 
-        size_t getSize();
-        sf::RectangleShape& operator[](size_t id);
-        void destroyPlatform(size_t id);
-        void clear();
+        static size_t getSize();
+        static sf::RectangleShape& getPlatform(size_t id);
+        static void destroyPlatform(size_t id);
+        static void clear();
 
     protected:
 
     private:
-        std::vector<sf::RectangleShape> platformsVector;
+        static std::vector<sf::RectangleShape> platformsVector;
 
 
 };
