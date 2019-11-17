@@ -28,13 +28,19 @@ class Player
 
     private:
         void initPlayer();
+        void initHealthBar();
 
         void updateInput();
         void updateTime();
         void updateShooting(sf::RenderWindow& window, sf::View view);
-        void updateEnemiesInteraction(std::vector<Enemy*> &enemiesVector);
+        void updateEnemiesInteraction(std::vector<Enemy*> &enemiesVector, bool &gameover);
         void updateWindowCollisions();
         void updatePlatformCollisions();
+        void updateHealthBar(sf::RenderWindow& window, sf::View view);
+
+        void dealDamage(size_t damage, bool &gameover);
+
+        void renderHealthBar(sf::RenderTarget &window) const;
 
         ///Variables
         sf::Vector2f velocity;
@@ -68,9 +74,19 @@ class Player
         float shootCooldown;
         float shootTimer;
         bool previousDirection;
+        ///HealthBar
+
+        sf::Texture hearthTex;
+        sf::RectangleShape tempHearth;
+        std::vector<sf::RectangleShape> hearthVector;
+        size_t startingLife;
+        size_t currentHP;
+
+        bool invulnerableFlag;
+        float invulnerableTimer;
+        float invulnerableCooldown;
 
         ///Animation
-
         Animation* runAnimationRight;
         Animation* runAnimationLeft;
         Animation* idleAnimationRight;

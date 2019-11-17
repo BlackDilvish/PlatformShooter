@@ -11,15 +11,17 @@ class Menu
         virtual ~Menu();
 
         void update(const sf::RenderWindow& window, bool& gameover);
-        void render(sf::RenderTarget& window);
+        void render(sf::RenderTarget& window) const;
 
-        size_t getStatus();
+        size_t getStatus() const;
         void setStatus(size_t newStatus);
 
         void open(sf::Vector2f deltaMove);
+        void openGameover(sf::Vector2f deltaMove);
+
         void setPosition(sf::Vector2f deltaMove);
 
-        enum state {hidden,main,options};
+        enum state {hidden,main,options,gameOver};
     private:
         ///Functions
         void initText();
@@ -41,6 +43,11 @@ class Menu
         sf::Text resumeText;
         sf::Text optionsText;
         sf::Text exitText;
+
+        ///Gameover
+        sf::RectangleShape gameoverCanvas;
+
+        sf::Text gameoverText;
 };
 
 #endif // MENU_H

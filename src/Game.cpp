@@ -39,6 +39,7 @@ void Game::initView()
 void Game::initVariables()
 {
     gameover = false;
+    isDead = false;
     currentLevel = 1;
 
     mapSize = sf::Vector2f(window->getSize().x, 0);
@@ -200,6 +201,9 @@ void Game::pollevents()
             }
     }
 
+    if(menu->getStatus() != Menu::gameOver && isDead)
+        menu->openGameover(mainView.getCenter() - sf::Vector2f(window->getSize())/2.f);
+
     if(gameover)
         window->close();
 }
@@ -249,7 +253,7 @@ void Game::update()
 
     if(menu->getStatus() == Menu::hidden)
     {
-        player1.update(*window,mainView, gameover, enemiesVector);
+        player1.update(*window,mainView, isDead, enemiesVector);
         updateEnemies();
         updateNpc();
         updateObjects();
@@ -259,24 +263,24 @@ void Game::update()
     menu->update(*window,gameover);
 }
 
-void Game::renderImages()
+void Game::renderImages() const
 {
     window->draw(mapSprite[currentLevel - 1]);
 }
 
-void Game::renderEnemies()
+void Game::renderEnemies() const
 {
     for(size_t i=0; i<enemiesVector.size();i++)
         enemiesVector[i]->render(*window);
 }
 
-void Game::renderNpc()
+void Game::renderNpc() const
 {
     for(size_t i=0; i<npcVector.size(); i++)
         npcVector[i]->render(*window);
 }
 
-void Game::renderObjects()
+void Game::renderObjects() const
 {
     for(size_t i=0; i<doorsVector.size(); i++)
         doorsVector[i]->render(*window);
@@ -321,7 +325,7 @@ void Game::freeObjects()
     doorsVector.clear();
 }
 
-const bool Game::isPlaying()
+const bool Game::isPlaying() const
 {
     return !gameover;
 }

@@ -26,6 +26,13 @@ void Player::initPlayer()
     shootTimer = 0;
     deltaTime = 0;
 
+    startingLife = 3;
+    currentHP = startingLife;
+
+    invulnerableFlag = false;
+    invulnerableCooldown = 3.f;
+    invulnerableTimer = 0;
+
     inSpace=true;
     collidingTop=false;
 
@@ -42,12 +49,36 @@ void Player::initPlayer()
     runAnimationLeft = new Animation((char*)"Assets/Images/MageRun.png",5,{978, 1127},playerShape.getSize(),0.08f,true,true);
     idleAnimationRight = new Animation((char*)"Assets/Images/MageStands.png",5,{867, 1059},playerShape.getSize(),0.15f,true,false);
     idleAnimationLeft = new Animation((char*)"Assets/Images/MageStands.png",5,{867, 1059},playerShape.getSize(),0.15f,true,true);
+
+    initHealthBar();
+}
+
+void Player::initHealthBar()
+{
+    hearthTex.loadFromFile("Assets/Images/PixelHearth.png");
+
+    tempHearth.setSize(sf::Vector2f(50.f, 50.f));
+    tempHearth.setPosition(sf::Vector2f(10.f, 10.f));
+    tempHearth.setTexture(&hearthTex);
+
+    for(size_t i=0; i<startingLife; i++)
+    {
+        tempHearth.setPosition(tempHearth.getPosition() + sf::Vector2f(tempHearth.getSize().x * i, 0));
+        hearthVector.push_back(tempHearth);
+    }
 }
 
 void Player::reset(sf::Vector2f pos,sf::Vector2f mapSize)
 {
     playerShape.setPosition(pos);
     currentMapSize = mapSize;
+
+    hearthVector.clear();
+    for(size_t i=0; i<startingLife; i++)
+    {
+        tempHearth.setPosition(tempHearth.getPosition() + sf::Vector2f(tempHearth.getSize().x * i, 0));
+        hearthVector.push_back(tempHearth);
+    }
 }
 
 void Player::updateTime()
@@ -55,6 +86,10 @@ void Player::updateTime()
     deltaTime = clock.getElapsedTime().asSeconds();
 
     shootTimer += deltaTime;
+
+    if(invulnerableFlag)
+        invulnerableTimer += deltaTime;
+
     for(size_t i=0; i<bulletsVector.size(); i++)
         bulletsVector[i].lifeTimer += deltaTime;
 
@@ -66,8 +101,12 @@ void Player::updateInput()
 {
     velocity.x=0;
 
+    ///Player falls faster then he hovers
     if(inSpace)
-        velocity.y+=gravity*0.15;
+        if(velocity.y < 0)
+            velocity.y+=gravity*0.15;
+        else
+            velocity.y+=gravity*0.2;
     else
         velocity.y=0;
 
@@ -102,6 +141,7 @@ void Player::updateInput()
     }
 
     playerShape.move(velocity);
+
     if(collidingTop)
     {
         runAnimationRight->setPosition(sf::Vector2f(playerShape.getPosition().x, runAnimationRight->getPosition().y));
@@ -115,6 +155,52 @@ void Player::updateInput()
         runAnimationLeft->setPosition(playerShape.getPosition());
         idleAnimationRight->setPosition(playerShape.getPosition());
         idleAnimationLeft->setPosition(playerShape.getPosition());
+    }
+}
+
+void Player::updateHealthBar(sf::RenderWindow& window, sf::View view)
+{
+    for(size_t i=0; i<hearthVector.size(); i++)
+    {
+        hearthVector[i].setPosition(view.getCenter() - sf::Vector2f(window.getSize().x/2.f - tempHearth.getSize().x*i - 10.f, window.getSize().y/2.f - 10.f));
+    }
+
+    if(invulnerableFlag)
+    {
+        if(invulnerableTimer>invulnerableCooldown)
+        {
+            invulnerableFlag = false;
+
+            for(size_t i=0; i<hearthVector.size(); i++)
+                hearthVector[i].setFillColor(sf::Color::White);
+        }
+        else
+        {
+            sf::Color tempColor = rand()%2 ? sf::Color::Black : sf::Color::White;
+
+            for(size_t i=0; i<hearthVector.size(); i++)
+                hearthVector[i].setFillColor(tempColor);
+        }
+    }
+
+}
+
+void Player::dealDamage(size_t damage, bool &gameover)
+{
+    if(currentHP == 0)
+        gameover = true;
+
+    if(!invulnerableFlag)
+    {
+
+        for(size_t i=0; i<damage; i++)
+        {
+            hearthVector.erase(hearthVector.end() - 1);
+            currentHP--;
+        }
+
+        invulnerableFlag = true;
+        invulnerableTimer = 0;
     }
 }
 
@@ -148,12 +234,12 @@ void Player::updateShooting(sf::RenderWindow& window, sf::View view)
 
 }
 
-void Player::updateEnemiesInteraction(std::vector<Enemy*> &enemiesVector)
+void Player::updateEnemiesInteraction(std::vector<Enemy*> &enemiesVector, bool &gameover)
 {
     for(size_t i=0; i<enemiesVector.size(); i++)
     {
         if(playerShape.getGlobalBounds().intersects(enemiesVector[i]->getGlobalBounds()))
-            std::cout<<"Kolizja! Zrobie pozniej";
+            dealDamage(1, gameover);
 
         for(size_t j=0; j<bulletsVector.size(); j++)
             if(bulletsVector[j].bulletShape.getGlobalBounds().intersects(enemiesVector[i]->getGlobalBounds()))
@@ -259,8 +345,15 @@ void Player::update(sf::RenderWindow &window,sf::View view,bool &gameOver,std::v
     updateInput();
     updateWindowCollisions();
     updateShooting(window,view);
-    updateEnemiesInteraction(enemiesVector);
+    updateEnemiesInteraction(enemiesVector, gameOver);
     updatePlatformCollisions();
+    updateHealthBar(window, view);
+}
+
+void Player::renderHealthBar(sf::RenderTarget &window) const
+{
+    for(size_t i=0; i<hearthVector.size(); i++)
+        window.draw(hearthVector[i]);
 }
 
 void Player::render(sf::RenderTarget &window)
@@ -277,6 +370,8 @@ void Player::render(sf::RenderTarget &window)
 
     for(size_t i=0; i<bulletsVector.size(); i++)
         window.draw(bulletsVector[i].bulletShape);
+
+    renderHealthBar(window);
 }
 
 sf::Vector2f Player::getPosition()          {return playerShape.getPosition();       }

@@ -26,7 +26,7 @@ class Game
         void update();
         void render();
 
-        const bool isPlaying();
+        const bool isPlaying() const;
 
     protected:
 
@@ -50,10 +50,10 @@ class Game
         void updateObjects();
 
         ///renders
-        void renderImages();
-        void renderEnemies();
-        void renderNpc();
-        void renderObjects();
+        void renderImages() const;
+        void renderEnemies() const;
+        void renderNpc() const;
+        void renderObjects() const;
 
         ///free
         void freeEnemies();
@@ -68,6 +68,7 @@ class Game
 
         size_t currentLevel;
         bool gameover;
+        bool isDead;
 
         sf::View mainView;
         sf::Vector2f mapSize;

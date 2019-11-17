@@ -2,8 +2,9 @@
 
 Menu::Menu(sf::Vector2u size)
 {
+    ///Main
     menuCanvas.setSize(sf::Vector2f(size));
-    menuCanvas.setFillColor(sf::Color(180,180,180,100));
+    menuCanvas.setFillColor(sf::Color(0,0,0,100));
 
     resumeButton.setSize(sf::Vector2f(250.f,100.f));
     resumeButton.setPosition(sf::Vector2f(menuCanvas.getSize().x/2.f - resumeButton.getSize().x/2.f, menuCanvas.getSize().y/2.f - 2*resumeButton.getSize().y));
@@ -13,6 +14,11 @@ Menu::Menu(sf::Vector2u size)
 
     exitButton.setSize(resumeButton.getSize());
     exitButton.setPosition(sf::Vector2f(resumeButton.getPosition().x, optionsButton.getPosition().y + 2*exitButton.getSize().y));
+
+    ///Gameover
+    gameoverCanvas.setSize(sf::Vector2f(size));
+    gameoverCanvas.setFillColor(sf::Color(255, 0, 0, 150));
+
 
     initText();
 
@@ -42,6 +48,12 @@ void Menu::initText()
     exitText.setPosition(exitButton.getPosition());
     exitText.setCharacterSize(63);
     exitText.setString("Exit");
+
+    gameoverText.setFont(font);
+    gameoverText.setPosition(resumeButton.getPosition());
+    gameoverText.setCharacterSize(63);
+    gameoverText.setFillColor(sf::Color::Black);
+    gameoverText.setString("Nie zyjesz...");
 }
 
 void Menu::update(const sf::RenderWindow& window, bool& gameover)
@@ -70,7 +82,7 @@ void Menu::update(const sf::RenderWindow& window, bool& gameover)
             exitButton.setFillColor(sf::Color::Red);
 
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                gameover = 1;
+                gameover = true;
         }
         else
         {
@@ -79,12 +91,25 @@ void Menu::update(const sf::RenderWindow& window, bool& gameover)
             exitButton.setFillColor(sf::Color::White);
         }
         break;
+    case Menu::gameOver:
+        if(exitButton.getGlobalBounds().contains(mousePos))
+        {
+            exitButton.setFillColor(sf::Color::Red);
+
+            if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                gameover = true;
+        }
+        else
+        {
+            exitButton.setFillColor(sf::Color::White);
+        }
+        break;
     default:
         break;
     }
 }
 
-void Menu::render(sf::RenderTarget& window)
+void Menu::render(sf::RenderTarget& window) const
 {
     switch(currentState)
     {
@@ -98,13 +123,19 @@ void Menu::render(sf::RenderTarget& window)
         window.draw(optionsText);
         window.draw(exitText);
         break;
+    case Menu::gameOver:
+        window.draw(gameoverCanvas);
+        window.draw(exitButton);
+
+        window.draw(gameoverText);
+        window.draw(exitText);
     default:
         break;
     }
 
 }
 
-size_t Menu::getStatus()
+size_t Menu::getStatus() const
 {
     return currentState;
 }
@@ -117,6 +148,7 @@ void Menu::setStatus(size_t newStatus)
 void Menu::setPosition(sf::Vector2f deltaMove)
 {
     menuCanvas.move(deltaMove);
+    gameoverCanvas.move(deltaMove);
 
     resumeButton.move(deltaMove);
     optionsButton.move(deltaMove);
@@ -125,6 +157,7 @@ void Menu::setPosition(sf::Vector2f deltaMove)
     resumeText.move(deltaMove);
     optionsText.move(deltaMove);
     exitText.move(deltaMove);
+    gameoverText.move(deltaMove);
 }
 
 void Menu::open(sf::Vector2f deltaMove)
@@ -141,4 +174,12 @@ void Menu::open(sf::Vector2f deltaMove)
         setPosition(-deltaMove);
         currentState = Menu::hidden;
     }
+}
+
+void Menu::openGameover(sf::Vector2f deltaMove)
+{
+    dMove = deltaMove;
+
+    setPosition(deltaMove);
+    currentState = Menu::gameOver;
 }
