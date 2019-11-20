@@ -161,6 +161,7 @@ void Npc::update(sf::RenderWindow& window, Player& player, sf::Vector2f& deltaMo
     {
         if(!interactionIcon.isDisplayed)
         {
+            player.Talks(true);
             interactionIcon.isDisplayed = true;
             dialogIcon.isDisplayed = true;
         }
@@ -170,6 +171,7 @@ void Npc::update(sf::RenderWindow& window, Player& player, sf::Vector2f& deltaMo
 
     if(!shape.getGlobalBounds().intersects(player.getGlobalBounds()) && interactionIcon.isDisplayed)
     {
+        player.Talks(false);
         interactionIcon.isDisplayed = false;
         dialogIcon.isDisplayed = false;
         MessageBox.isDisplayed =false;

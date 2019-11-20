@@ -16,6 +16,8 @@
 #include"Menu.h"
 #include"InteractionObject.h"
 #include"Object_Doors.h"
+#include"Collectable.h"
+#include"Coin.h"
 
 class Game
 {
@@ -27,8 +29,6 @@ class Game
         void render();
 
         const bool isPlaying() const;
-
-    protected:
 
     private:
 
@@ -48,17 +48,20 @@ class Game
         void updateEnemies();
         void updateNpc();
         void updateObjects();
+        void updateCollect();
 
         ///renders
         void renderImages() const;
         void renderEnemies() const;
         void renderNpc() const;
         void renderObjects() const;
+        void renderCollect() const;
 
         ///free
         void freeEnemies();
         void freeNpc();
         void freeObjects();
+        void freeCollect();
 
 
     ///-----VARIABLES-----///
@@ -89,6 +92,9 @@ class Game
 
         ///Objects
         std::vector<Object_Doors*> doorsVector;
+
+        ///Collect
+        std::vector<Collectable*> collectVector;
 
         ///Mouse
         sf::Vector2f mousePos;

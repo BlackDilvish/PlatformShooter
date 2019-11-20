@@ -7,13 +7,19 @@ Player::Player()
 
 Player::~Player()
 {
-    delete runAnimationRight;
-    delete runAnimationLeft;
-    delete idleAnimationRight;
-    delete idleAnimationLeft;
+    deleteAnimations();
 }
 
 void Player::initPlayer()
+{
+    initVariables();
+    initShapes();
+    initAnimations();
+    initHealthBar();
+    initText();
+}
+
+void Player::initVariables()
 {
     playerSize={90.f, 105.f};
     playerPosition={100.f,100.f};
@@ -35,7 +41,11 @@ void Player::initPlayer()
 
     inSpace=true;
     collidingTop=false;
+    _talks = false;
+}
 
+void Player::initShapes()
+{
     playerShape.setSize(playerSize);
     playerShape.setPosition(playerPosition);
 
@@ -44,13 +54,24 @@ void Player::initPlayer()
 
     tempBullet.periodOfLife = 2.f;
     tempBullet.lifeTimer = 0;
+}
 
+void Player::initAnimations()
+{
     runAnimationRight = new Animation((char*)"Assets/Images/MageRun.png",5,{978, 1127},playerShape.getSize(),0.08f,true,false);
     runAnimationLeft = new Animation((char*)"Assets/Images/MageRun.png",5,{978, 1127},playerShape.getSize(),0.08f,true,true);
     idleAnimationRight = new Animation((char*)"Assets/Images/MageStands.png",5,{867, 1059},playerShape.getSize(),0.15f,true,false);
     idleAnimationLeft = new Animation((char*)"Assets/Images/MageStands.png",5,{867, 1059},playerShape.getSize(),0.15f,true,true);
+}
 
-    initHealthBar();
+void Player::initText()
+{
+    _font.loadFromFile("Assets/Fonts/McLaren.ttf");
+
+    _pointsText.setFont(_font);
+    _pointsText.setCharacterSize(32);
+    _pointsText.setPosition(hearthVector[hearthVector.size()-1].getPosition());
+    updatePoints(0);
 }
 
 void Player::initHealthBar()
@@ -58,14 +79,11 @@ void Player::initHealthBar()
     hearthTex.loadFromFile("Assets/Images/PixelHearth.png");
 
     tempHearth.setSize(sf::Vector2f(50.f, 50.f));
-    tempHearth.setPosition(sf::Vector2f(10.f, 10.f));
     tempHearth.setTexture(&hearthTex);
 
     for(size_t i=0; i<startingLife; i++)
-    {
-        tempHearth.setPosition(tempHearth.getPosition() + sf::Vector2f(tempHearth.getSize().x * i, 0));
         hearthVector.push_back(tempHearth);
-    }
+
 }
 
 void Player::reset(sf::Vector2f pos,sf::Vector2f mapSize)
@@ -163,6 +181,7 @@ void Player::updateHealthBar(sf::RenderWindow& window, sf::View view)
     for(size_t i=0; i<hearthVector.size(); i++)
     {
         hearthVector[i].setPosition(view.getCenter() - sf::Vector2f(window.getSize().x/2.f - tempHearth.getSize().x*i - 10.f, window.getSize().y/2.f - 10.f));
+        _pointsText.setPosition(hearthVector[0].getPosition() + sf::Vector2f(0, hearthVector[0].getSize().y));
     }
 
     if(invulnerableFlag)
@@ -183,6 +202,15 @@ void Player::updateHealthBar(sf::RenderWindow& window, sf::View view)
         }
     }
 
+}
+
+void Player::updatePoints(size_t newPoints)
+{
+    _pointsCounter = newPoints;
+
+    std::stringstream ss;
+    ss<<"Punkty: "<<_pointsCounter;
+    _pointsText.setString(ss.str());
 }
 
 void Player::dealDamage(size_t damage, bool &gameover)
@@ -206,7 +234,7 @@ void Player::dealDamage(size_t damage, bool &gameover)
 
 void Player::updateShooting(sf::RenderWindow& window, sf::View view)
 {
-    if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && shootTimer > shootCooldown)
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && canShoot())
     {
         shootTimer = 0;
 
@@ -255,6 +283,20 @@ void Player::updateEnemiesInteraction(std::vector<Enemy*> &enemiesVector, bool &
                 bulletsVector.erase(bulletsVector.begin() + j);
 
             }
+    }
+}
+
+void Player::updateCollectableInteraction(std::vector<Collectable*> &collectableVector)
+{
+    for(size_t i=0; i<collectableVector.size(); i++)
+    {
+        if(playerShape.getGlobalBounds().intersects(collectableVector[i]->getGlobalBounds()))
+        {
+            delete collectableVector[i];
+            collectableVector.erase(collectableVector.begin() + i);
+
+            updatePoints(_pointsCounter + 1);
+        }
     }
 }
 
@@ -339,13 +381,14 @@ void Player::updatePlatformCollisions()
 }
 
 
-void Player::update(sf::RenderWindow &window,sf::View view,bool &gameOver,std::vector<Enemy*> &enemiesVector)
+void Player::update(sf::RenderWindow &window,sf::View view,bool &gameOver,std::vector<Enemy*> &enemiesVector, std::vector<Collectable*> &collectableVector)
 {
     updateTime();
     updateInput();
     updateWindowCollisions();
     updateShooting(window,view);
     updateEnemiesInteraction(enemiesVector, gameOver);
+    updateCollectableInteraction(collectableVector);
     updatePlatformCollisions();
     updateHealthBar(window, view);
 }
@@ -354,9 +397,10 @@ void Player::renderHealthBar(sf::RenderTarget &window) const
 {
     for(size_t i=0; i<hearthVector.size(); i++)
         window.draw(hearthVector[i]);
+    window.draw(_pointsText);
 }
 
-void Player::render(sf::RenderTarget &window)
+void Player::render(sf::RenderTarget &window) const
 {
     if(velocity.x > 0)
         runAnimationRight->render(window);
@@ -374,6 +418,20 @@ void Player::render(sf::RenderTarget &window)
     renderHealthBar(window);
 }
 
-sf::Vector2f Player::getPosition()          {return playerShape.getPosition();       }
-sf::Vector2f Player::getSize()              {return playerShape.getSize();           }
-sf::FloatRect Player::getGlobalBounds()     {return playerShape.getGlobalBounds();   }
+bool Player::canShoot() const
+{
+    return !_talks && shootTimer>shootCooldown;
+}
+
+void Player::deleteAnimations()
+{
+    delete runAnimationRight;
+    delete runAnimationLeft;
+    delete idleAnimationRight;
+    delete idleAnimationLeft;
+}
+
+sf::Vector2f Player::getPosition()  const         {return playerShape.getPosition();       }
+sf::Vector2f Player::getSize()    const           {return playerShape.getSize();           }
+sf::FloatRect Player::getGlobalBounds() const     {return playerShape.getGlobalBounds();   }
+void Player::Talks(bool state)                    {_talks = state;                         }

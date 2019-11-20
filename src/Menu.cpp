@@ -2,58 +2,32 @@
 
 Menu::Menu(sf::Vector2u size)
 {
-    ///Main
-    menuCanvas.setSize(sf::Vector2f(size));
-    menuCanvas.setFillColor(sf::Color(0,0,0,100));
+    font.loadFromFile("Assets/Fonts/Lato.ttf");
+    buttonSize = sf::Vector2f(250.f,100.f);
 
-    resumeButton.setSize(sf::Vector2f(250.f,100.f));
-    resumeButton.setPosition(sf::Vector2f(menuCanvas.getSize().x/2.f - resumeButton.getSize().x/2.f, menuCanvas.getSize().y/2.f - 2*resumeButton.getSize().y));
-
-    optionsButton.setSize(resumeButton.getSize());
-    optionsButton.setPosition(sf::Vector2f(resumeButton.getPosition().x, resumeButton.getPosition().y + 2*optionsButton.getSize().y));
-
-    exitButton.setSize(resumeButton.getSize());
-    exitButton.setPosition(sf::Vector2f(resumeButton.getPosition().x, optionsButton.getPosition().y + 2*exitButton.getSize().y));
-
-    ///Gameover
-    gameoverCanvas.setSize(sf::Vector2f(size));
-    gameoverCanvas.setFillColor(sf::Color(255, 0, 0, 150));
-
-
-    initText();
+    initCanvases(size);
+    initButtons();
 
     currentState = Menu::hidden;
 }
 
 Menu::~Menu()
 {
-    //dtor
+    deleteCanvases();
+    deleteButtons();
 }
 
-void Menu::initText()
+void Menu::initCanvases(sf::Vector2u size)
 {
-    font.loadFromFile("Assets/Fonts/Lato.ttf");
+    menuCanvas = new Canvas(size, sf::Color(0,0,0,100), font, "Menu glowne");
+    gameoverCanvas = new Canvas(size, sf::Color(255, 0, 0, 150), font, "Nie zyjesz...", sf::Color::Black);
+}
 
-    resumeText.setFont(font);
-    resumeText.setPosition(resumeButton.getPosition());
-    resumeText.setCharacterSize(63);
-    resumeText.setString("Resume");
-
-    optionsText.setFont(font);
-    optionsText.setPosition(optionsButton.getPosition());
-    optionsText.setCharacterSize(63);
-    optionsText.setString("Opcje");
-
-    exitText.setFont(font);
-    exitText.setPosition(exitButton.getPosition());
-    exitText.setCharacterSize(63);
-    exitText.setString("Exit");
-
-    gameoverText.setFont(font);
-    gameoverText.setPosition(resumeButton.getPosition());
-    gameoverText.setCharacterSize(63);
-    gameoverText.setFillColor(sf::Color::Black);
-    gameoverText.setString("Nie zyjesz...");
+void Menu::initButtons()
+{
+    resumeButton = new Button(buttonSize, menuCanvas->getSize()/2.f - sf::Vector2f(buttonSize.x/2.f, buttonSize.y*2.f), font, "Resume", sf::Color::Green);
+    optionsButton = new Button(buttonSize, resumeButton->getPosition() + sf::Vector2f(0, buttonSize.y*2.f), font, "Options", sf::Color::Blue);
+    exitButton = new Button(buttonSize, optionsButton->getPosition() + sf::Vector2f(0, buttonSize.y*2.f), font, "Exit", sf::Color::Red);
 }
 
 void Menu::update(const sf::RenderWindow& window, bool& gameover)
@@ -63,45 +37,45 @@ void Menu::update(const sf::RenderWindow& window, bool& gameover)
     switch(currentState)
     {
     case Menu::main:
-        if(resumeButton.getGlobalBounds().contains(mousePos))
+        if(resumeButton->hovers(mousePos))
         {
-            resumeButton.setFillColor(sf::Color::Green);
+            resumeButton->Light();
 
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
                 open(dMove);
         }
-        else if(optionsButton.getGlobalBounds().contains(mousePos))
+        else if(optionsButton->hovers(mousePos))
         {
-            optionsButton.setFillColor(sf::Color::Blue);
+            optionsButton->Light();
 
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
                 std::cout<<"Jakies opcje\n";
         }
-        else if(exitButton.getGlobalBounds().contains(mousePos))
+        else if(exitButton->hovers(mousePos))
         {
-            exitButton.setFillColor(sf::Color::Red);
+            exitButton->Light();
 
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
                 gameover = true;
         }
         else
         {
-            resumeButton.setFillColor(sf::Color::White);
-            optionsButton.setFillColor(sf::Color::White);
-            exitButton.setFillColor(sf::Color::White);
+            resumeButton->Dark();
+            optionsButton->Dark();
+            exitButton->Dark();
         }
         break;
     case Menu::gameOver:
-        if(exitButton.getGlobalBounds().contains(mousePos))
+        if(exitButton->hovers(mousePos))
         {
-            exitButton.setFillColor(sf::Color::Red);
+            exitButton->Light();
 
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
                 gameover = true;
         }
         else
         {
-            exitButton.setFillColor(sf::Color::White);
+            exitButton->Dark();
         }
         break;
     default:
@@ -114,21 +88,17 @@ void Menu::render(sf::RenderTarget& window) const
     switch(currentState)
     {
     case Menu::main:
-        window.draw(menuCanvas);
-        window.draw(resumeButton);
-        window.draw(optionsButton);
-        window.draw(exitButton);
+        menuCanvas->render(window);
 
-        window.draw(resumeText);
-        window.draw(optionsText);
-        window.draw(exitText);
+        resumeButton->render(window);
+        optionsButton->render(window);
+        exitButton->render(window);
         break;
     case Menu::gameOver:
-        window.draw(gameoverCanvas);
-        window.draw(exitButton);
+        gameoverCanvas->render(window);
 
-        window.draw(gameoverText);
-        window.draw(exitText);
+        exitButton->render(window);
+        break;
     default:
         break;
     }
@@ -147,17 +117,12 @@ void Menu::setStatus(size_t newStatus)
 
 void Menu::setPosition(sf::Vector2f deltaMove)
 {
-    menuCanvas.move(deltaMove);
-    gameoverCanvas.move(deltaMove);
+    menuCanvas->move(deltaMove);
+    gameoverCanvas->move(deltaMove);
 
-    resumeButton.move(deltaMove);
-    optionsButton.move(deltaMove);
-    exitButton.move(deltaMove);
-
-    resumeText.move(deltaMove);
-    optionsText.move(deltaMove);
-    exitText.move(deltaMove);
-    gameoverText.move(deltaMove);
+    resumeButton->move(deltaMove);
+    optionsButton->move(deltaMove);
+    exitButton->move(deltaMove);
 }
 
 void Menu::open(sf::Vector2f deltaMove)
@@ -182,4 +147,17 @@ void Menu::openGameover(sf::Vector2f deltaMove)
 
     setPosition(deltaMove);
     currentState = Menu::gameOver;
+}
+
+void Menu::deleteCanvases()
+{
+    delete menuCanvas;
+    delete gameoverCanvas;
+}
+
+void Menu::deleteButtons()
+{
+    delete resumeButton;
+    delete optionsButton;
+    delete exitButton;
 }

@@ -14,6 +14,7 @@ Game::~Game()
     freeEnemies();
     freeNpc();
     freeObjects();
+    freeCollect();
 
     delete window;
 }
@@ -61,6 +62,7 @@ void Game::initMap(size_t mapId)
     freeEnemies();
     freeNpc();
     freeObjects();
+    freeCollect();
     PlatformsManager::clear();
 
     std::stringstream ss;
@@ -81,13 +83,16 @@ void Game::initMap(size_t mapId)
 
                 PlatformsManager::addPlatform(platformParams);
             }
-            else if(type == "Goblin(Platform):")
+            else if(type == "Goblin(Platform):" || type == "Orc(Platform):")
             {
                 int platformId;
                 configFile>>platformId;
 
-                Goblin* temp = new Goblin(PlatformsManager::getPlatform(platformId));
-                enemiesVector.push_back(temp);
+                if(type == "Goblin(Platform):")
+                    enemiesVector.push_back(new Goblin(PlatformsManager::getPlatform(platformId)));
+                else if(type == "Orc(Platform):")
+                    enemiesVector.push_back(new Orc(PlatformsManager::getPlatform(platformId)));
+
             }
             else if(type == "Goblin:" || type == "Orc:")
             {
@@ -96,15 +101,9 @@ void Game::initMap(size_t mapId)
                      configFile>>enemyParams[i];
 
                 if(type == "Goblin:")
-                {
-                    Goblin* temp = new Goblin(enemyParams);
-                    enemiesVector.push_back(temp);
-                }
+                    enemiesVector.push_back(new Goblin(enemyParams));
                 else if(type == "Orc:")
-                {
-                    Orc* temp = new Orc(enemyParams);
-                    enemiesVector.push_back(temp);
-                }
+                    enemiesVector.push_back(new Orc(enemyParams));
 
             }
             else if(type == "BlackSmith:")
@@ -118,15 +117,9 @@ void Game::initMap(size_t mapId)
                     configFile>>npcParams[i];
 
                 if(npcParams[2] == 0 && npcParams[3] == 0)
-                {
-                    Blacksmith* temp = new Blacksmith(sf::Vector2f(npcParams[0],npcParams[1]));
-                    npcVector.push_back(temp);
-                }
+                    npcVector.push_back(new Blacksmith(sf::Vector2f(npcParams[0],npcParams[1])));
                 else
-                {
-                    Blacksmith* temp = new Blacksmith(sf::Vector2f(npcParams[0],npcParams[1]), sf::Vector2f(npcParams[2],npcParams[3]));
-                    npcVector.push_back(temp);
-                }
+                    npcVector.push_back(new Blacksmith(sf::Vector2f(npcParams[0],npcParams[1]), sf::Vector2f(npcParams[2],npcParams[3])));
 
                 configFile>>count;
                 for(int i=0; i<count; i++)
@@ -135,8 +128,12 @@ void Game::initMap(size_t mapId)
 
                     ///Replacing underlines with spaces
                     for(size_t j=0; j<tempMessage.length(); j++)
+                    {
                         if(tempMessage[j] == '_')
                             tempMessage[j] = ' ';
+                        else if(tempMessage[j] == '^')
+                            tempMessage[j] = '\n';
+                    }
 
                     messagesNPC.push_back(tempMessage);
                 }
@@ -151,16 +148,25 @@ void Game::initMap(size_t mapId)
                     configFile>>objParams[i];
                 configFile>>scene;
 
-                Object_Doors* temp = new Object_Doors({objParams[0], objParams[1]}, {objParams[2], objParams[3]}, scene);
-                doorsVector.push_back(temp);
+                doorsVector.push_back(new Object_Doors({objParams[0], objParams[1]}, {objParams[2], objParams[3]}, scene));
+            }
+            else if(type == "Coin:")
+            {
+                float collectParams[4];
+                size_t value;
+
+                for(auto i : {0,1,2,3})
+                    configFile>>collectParams[i];
+                configFile>>value;
+
+                collectVector.push_back(new Coin({collectParams[0], collectParams[1]}, {collectParams[2], collectParams[3]}, value));
             }
             else if(type == "mapSize:")
             {
                 configFile>>mapSize.x;
                 configFile>>mapSize.y;
             }
-            else
-                std::cout<<"Undefined type of data in config file\n";
+            else; ///"Undefined type of data in configuration file";
         }
 
         configFile.close();
@@ -224,27 +230,33 @@ void Game::updateView()
 
 void Game::updateEnemies()
 {
-    for(size_t i=0; i<enemiesVector.size(); i++)
-        enemiesVector[i]->update();
+    for(auto&& enemy : enemiesVector)
+        enemy->update();
 }
 
 void Game::updateNpc()
 {
     sf::Vector2f deltaMove = mainView.getCenter() - sf::Vector2f(window->getSize())/2.f;
 
-    for(size_t i=0; i<npcVector.size(); i++)
-        npcVector[i]->update(*window, player1, deltaMove);
+    for(auto&& npc : npcVector)
+        npc->update(*window, player1, deltaMove);
 }
 
 void Game::updateObjects()
 {
-    for(size_t i=0; i<doorsVector.size(); i++)
+    for(auto&& door : doorsVector)
     {
-        doorsVector[i]->update(player1);
+        door->update(player1);
 
-        if(doorsVector[i]->getOpenStatus())
-            initMap(doorsVector[i]->getScene());
+        if(door->getOpenStatus())
+            initMap(door->getScene());
     }
+}
+
+void Game::updateCollect()
+{
+    for(auto&& collect : collectVector)
+        collect->Update();
 }
 
 void Game::update()
@@ -253,10 +265,11 @@ void Game::update()
 
     if(menu->getStatus() == Menu::hidden)
     {
-        player1.update(*window,mainView, isDead, enemiesVector);
+        player1.update(*window,mainView, isDead, enemiesVector, collectVector);
         updateEnemies();
         updateNpc();
         updateObjects();
+        updateCollect();
     }
 
     updateView();
@@ -270,20 +283,26 @@ void Game::renderImages() const
 
 void Game::renderEnemies() const
 {
-    for(size_t i=0; i<enemiesVector.size();i++)
-        enemiesVector[i]->render(*window);
+    for(auto&& enemy : enemiesVector)
+        enemy->render(*window);
 }
 
 void Game::renderNpc() const
 {
-    for(size_t i=0; i<npcVector.size(); i++)
-        npcVector[i]->render(*window);
+    for(auto&& npc : npcVector)
+        npc->render(*window);
 }
 
 void Game::renderObjects() const
 {
-    for(size_t i=0; i<doorsVector.size(); i++)
-        doorsVector[i]->render(*window);
+    for(auto&& door : doorsVector)
+        door->render(*window);
+}
+
+void Game::renderCollect() const
+{
+    for(auto&& collectable : collectVector)
+        collectable->Render(*window);
 }
 
 void Game::render()
@@ -295,6 +314,7 @@ void Game::render()
     renderEnemies();
     renderNpc();
     renderObjects();
+    renderCollect();
     player1.render(*window);
     menu->render(*window);
 
@@ -303,26 +323,34 @@ void Game::render()
 
 void Game::freeEnemies()
 {
-    for(size_t i=0; i<enemiesVector.size(); i++)
-        delete enemiesVector[i];
+    for(auto&& enemy : enemiesVector)
+        delete enemy;
 
     enemiesVector.clear();
 }
 
 void Game::freeNpc()
 {
-    for(size_t i=0; i<npcVector.size(); i++)
-        delete npcVector[i];
+    for(auto&& npc : npcVector)
+        delete npc;
 
     npcVector.clear();
 }
 
 void Game::freeObjects()
 {
-    for(size_t i=0; i<doorsVector.size(); i++)
-        delete doorsVector[i];
+    for(auto&& door : doorsVector)
+        delete door;
 
     doorsVector.clear();
+}
+
+void Game::freeCollect()
+{
+    for(auto&& collectable : collectVector)
+        delete collectable;
+
+    collectVector.clear();
 }
 
 const bool Game::isPlaying() const

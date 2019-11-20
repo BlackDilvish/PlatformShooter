@@ -3,6 +3,8 @@
 
 #include<SFML/Graphics.hpp>
 #include"iostream"
+#include"Button.h"
+#include"Canvas.h"
 
 class Menu
 {
@@ -24,30 +26,29 @@ class Menu
         enum state {hidden,main,options,gameOver};
     private:
         ///Functions
-        void initText();
+        void initCanvases(sf::Vector2u size);
+        void initButtons();
 
-        ///Menu GUI
-        sf::RectangleShape menuCanvas;
-        size_t currentState;
-
-        sf::Vector2f dMove;
+        void deleteCanvases();
+        void deleteButtons();
 
         ///Variables
+        size_t currentState;
         sf::Font font;
 
-        ///Main
-        sf::RectangleShape resumeButton;
-        sf::RectangleShape optionsButton;
-        sf::RectangleShape exitButton;
+        sf::Vector2f buttonSize;
+        sf::Vector2f dMove;
 
-        sf::Text resumeText;
-        sf::Text optionsText;
-        sf::Text exitText;
+        ///GUI
 
-        ///Gameover
-        sf::RectangleShape gameoverCanvas;
+            ///Canvas
+            Canvas* menuCanvas;
+            Canvas* gameoverCanvas;
 
-        sf::Text gameoverText;
+            ///Buttons
+            Button* resumeButton;
+            Button* optionsButton;
+            Button* exitButton;
 };
 
 #endif // MENU_H

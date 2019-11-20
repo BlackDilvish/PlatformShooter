@@ -5,11 +5,14 @@
 #include<SFML/Audio.hpp>
 #include<iostream>
 #include<vector>
+#include<string>
+#include<sstream>
 #include<math.h>
 #include"PlatformsManager.h"
 #include"Enemy.h"
 #include"Goblin.h"
 #include"Animation.h"
+#include"Collectable.h"
 
 class Player
 {
@@ -17,30 +20,40 @@ class Player
         Player();
         virtual ~Player();
 
-        void render(sf::RenderTarget &window);
-        void update(sf::RenderWindow &window, sf::View view,bool &gameOver,std::vector<Enemy*> &enemiesVector);
+        void render(sf::RenderTarget &window) const;
+        void update(sf::RenderWindow &window, sf::View view,bool &gameOver,std::vector<Enemy*> &enemiesVector,std::vector<Collectable*> &collectableVector);
 
         void reset(sf::Vector2f pos,sf::Vector2f mapSize);
-        sf::Vector2f getSize();
-        sf::Vector2f getPosition();
-        sf::FloatRect getGlobalBounds();
-    protected:
+        void Talks(bool state);
+
+        sf::Vector2f getSize() const;
+        sf::Vector2f getPosition() const;
+        sf::FloatRect getGlobalBounds() const;
 
     private:
         void initPlayer();
+        void initVariables();
+        void initShapes();
+        void initAnimations();
         void initHealthBar();
+        void initText();
 
         void updateInput();
         void updateTime();
         void updateShooting(sf::RenderWindow& window, sf::View view);
         void updateEnemiesInteraction(std::vector<Enemy*> &enemiesVector, bool &gameover);
+        void updateCollectableInteraction(std::vector<Collectable*> &collectableVector);
         void updateWindowCollisions();
         void updatePlatformCollisions();
         void updateHealthBar(sf::RenderWindow& window, sf::View view);
-
-        void dealDamage(size_t damage, bool &gameover);
+        void updatePoints(size_t newPoints);
 
         void renderHealthBar(sf::RenderTarget &window) const;
+
+        void deleteAnimations();
+
+        void dealDamage(size_t damage, bool &gameover);
+        bool canShoot() const;
 
         ///Variables
         sf::Vector2f velocity;
@@ -50,11 +63,14 @@ class Player
 
         sf::RectangleShape playerShape;
         sf::Texture playerTex;
+        sf::Font _font;
 
         float movementSpeed;
         float gravity;
         bool inSpace;
+
         bool collidingTop;
+        bool _talks;
 
         sf::Clock clock;
         float deltaTime;
@@ -85,8 +101,12 @@ class Player
         bool invulnerableFlag;
         float invulnerableTimer;
         float invulnerableCooldown;
+        ///Points
 
+        sf::Text _pointsText;
+        size_t _pointsCounter;
         ///Animation
+
         Animation* runAnimationRight;
         Animation* runAnimationLeft;
         Animation* idleAnimationRight;

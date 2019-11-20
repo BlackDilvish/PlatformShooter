@@ -4,7 +4,6 @@ Enemy::Enemy(sf::RectangleShape &platform)
 {
     enemyShape.setSize(sf::Vector2f(100.f, 100.f));
     enemyShape.setPosition(sf::Vector2f(platform.getPosition().x + platform.getSize().x/2.f, platform.getPosition().y - enemyShape.getSize().y));
-    enemyShape.setFillColor(sf::Color::Green);
 
     movingRange.x = platform.getPosition().x;
     movingRange.y = platform.getPosition().x + platform.getSize().x;
@@ -18,7 +17,6 @@ Enemy::Enemy(const sf::Vector2f &Position,const sf::Vector2f &Range)
 {
     enemyShape.setSize(sf::Vector2f(100.f, 100.f));
     enemyShape.setPosition(Position);
-    enemyShape.setFillColor(sf::Color::Red);
 
     movingRange = Range;
     speed = 3.f;
@@ -30,7 +28,6 @@ Enemy::Enemy(float *enemyParams)
 {
     enemyShape.setSize(sf::Vector2f(100.f,100.f));
     enemyShape.setPosition(enemyParams[0],enemyParams[1]);
-    enemyShape.setFillColor(sf::Color::Red);
 
     movingRange = {enemyParams[2], enemyParams[3]};
     speed = 3.f;
@@ -40,7 +37,7 @@ Enemy::Enemy(float *enemyParams)
 
 Enemy::~Enemy()
 {
-    //dtor
+
 }
 
 void Enemy::freeAnimation()
