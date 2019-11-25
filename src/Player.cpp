@@ -22,7 +22,6 @@ void Player::initPlayer()
 void Player::initVariables()
 {
     playerSize={90.f, 105.f};
-    playerPosition={100.f,100.f};
     movementSpeed=10.f;
     gravity=9.81f;
     previousDirection=1;
@@ -47,7 +46,6 @@ void Player::initVariables()
 void Player::initShapes()
 {
     playerShape.setSize(playerSize);
-    playerShape.setPosition(playerPosition);
 
     tempBullet.bulletShape.setRadius(5.f);
     tempBullet.bulletShape.setFillColor(sf::Color::Red);
@@ -86,17 +84,13 @@ void Player::initHealthBar()
 
 }
 
-void Player::reset(sf::Vector2f pos,sf::Vector2f mapSize)
+void Player::reset(sf::Vector2f pos,sf::Vector2f mapSize, size_t points)
 {
     playerShape.setPosition(pos);
     currentMapSize = mapSize;
 
-    hearthVector.clear();
-    for(size_t i=0; i<startingLife; i++)
-    {
-        tempHearth.setPosition(tempHearth.getPosition() + sf::Vector2f(tempHearth.getSize().x * i, 0));
-        hearthVector.push_back(tempHearth);
-    }
+    updatePoints(points);
+    resetHealth();
 }
 
 void Player::updateTime()
@@ -232,6 +226,17 @@ void Player::dealDamage(size_t damage, bool &gameover)
     }
 }
 
+void Player::resetHealth()
+{
+    currentHP = startingLife;
+    hearthVector.clear();
+    for(size_t i=0; i<currentHP; i++)
+    {
+        tempHearth.setPosition(tempHearth.getPosition() + sf::Vector2f(tempHearth.getSize().x * i, 0));
+        hearthVector.push_back(tempHearth);
+    }
+}
+
 void Player::updateShooting(sf::RenderWindow& window, sf::View view)
 {
     if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && canShoot())
@@ -324,8 +329,6 @@ void Player::updateWindowCollisions()
 
 void Player::updatePlatformCollisions()
 {
-
-
     sf::FloatRect playerBounds=playerShape.getGlobalBounds();
     collidingTop=false;
 

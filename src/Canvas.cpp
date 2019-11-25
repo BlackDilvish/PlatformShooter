@@ -14,6 +14,14 @@ Canvas::Canvas(sf::Vector2u size, sf::Color canvasColor,const sf::Font& font, st
     _canvasTitle.setPosition(getSize()/2.f - shift);
 }
 
+Canvas::Canvas(sf::Vector2u size, std::string path)
+{
+    _canvasTexture.loadFromFile(path);
+
+    _canvasShape.setSize(sf::Vector2f(size));
+    _canvasShape.setTexture(&_canvasTexture);
+}
+
 Canvas::~Canvas()
 {
 

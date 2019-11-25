@@ -6,14 +6,14 @@ Button::Button(sf::Vector2f size, sf::Vector2f pos)
     _buttonShape.setPosition(pos);
 }
 
-Button::Button(sf::Vector2f size, sf::Vector2f pos, sf::Font& font, char* text, sf::Color color)
+Button::Button(sf::Vector2f size, sf::Vector2f pos, sf::Font& font, std::string text, sf::Color color, size_t charSize)
 {
     _buttonShape.setSize(size);
     _buttonShape.setPosition(pos);
 
     _buttonText.setFont(font);
     _buttonText.setString(text);
-    _buttonText.setCharacterSize(63);
+    _buttonText.setCharacterSize(charSize);
 
     sf::Vector2f shift = sf::Vector2f(-size.x + _buttonText.findCharacterPos(_buttonText.getString().getSize()).x - _buttonText.findCharacterPos(0).x, 0)/2.f;
     _buttonText.setPosition(pos - shift);

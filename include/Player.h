@@ -23,7 +23,7 @@ class Player
         void render(sf::RenderTarget &window) const;
         void update(sf::RenderWindow &window, sf::View view,bool &gameOver,std::vector<Enemy*> &enemiesVector,std::vector<Collectable*> &collectableVector);
 
-        void reset(sf::Vector2f pos,sf::Vector2f mapSize);
+        void reset(sf::Vector2f pos,sf::Vector2f mapSize, size_t points = 0);
         void Talks(bool state);
 
         sf::Vector2f getSize() const;
@@ -53,12 +53,12 @@ class Player
         void deleteAnimations();
 
         void dealDamage(size_t damage, bool &gameover);
+        void resetHealth();
         bool canShoot() const;
 
         ///Variables
         sf::Vector2f velocity;
         sf::Vector2f playerSize;
-        sf::Vector2f playerPosition;
         sf::Vector2f currentMapSize;
 
         sf::RectangleShape playerShape;

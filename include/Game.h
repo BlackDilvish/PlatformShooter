@@ -13,11 +13,12 @@
 #include"Orc.h"
 #include"Npc.h"
 #include"Blacksmith.h"
-#include"Menu.h"
+#include"GameMenu.h"
 #include"InteractionObject.h"
 #include"Object_Doors.h"
 #include"Collectable.h"
 #include"Coin.h"
+#include"FileReader.h"
 
 class Game
 {
@@ -45,6 +46,7 @@ class Game
         ///updates
         void pollevents();
         void updateView();
+        void updateMenu();
         void updateEnemies();
         void updateNpc();
         void updateObjects();
@@ -76,7 +78,8 @@ class Game
         sf::View mainView;
         sf::Vector2f mapSize;
 
-        Menu* menu;
+        ///Menu
+        GameMenu* gameMenu;
 
         ///Text
         sf::Font defaultFont;

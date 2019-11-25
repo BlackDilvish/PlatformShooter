@@ -9,6 +9,7 @@ class Canvas
 {
     public:
         Canvas(sf::Vector2u size, sf::Color canvasColor,const sf::Font& font, std::string text = "", sf::Color textColor = sf::Color::White);
+        Canvas(sf::Vector2u size, std::string path);
         virtual ~Canvas();
 
         void render(sf::RenderTarget& window);
@@ -20,6 +21,7 @@ class Canvas
     private:
         sf::RectangleShape _canvasShape;
         sf::Text _canvasTitle;
+        sf::Texture _canvasTexture;
 };
 
 #endif // CANVAS_H

@@ -10,7 +10,7 @@ class Button
     public:
         Button() = default;
         Button(sf::Vector2f size, sf::Vector2f pos);
-        Button(sf::Vector2f size, sf::Vector2f pos, sf::Font& font, char* text, sf::Color color);
+        Button(sf::Vector2f size, sf::Vector2f pos, sf::Font& font, std::string text, sf::Color color, size_t charSize =63);
         virtual ~Button();
 
         void move(sf::Vector2f distance);
