@@ -68,6 +68,11 @@ void Npc::popMessageBox(std::string message="")
     MessageBox.isDisplayed = true;
 }
 
+void Npc::DefaultInfo(const std::string& info)
+{
+    _defaultInfo = info;
+}
+
 void Npc::popDialogBox()
 {
     currentPage = 0;
@@ -88,7 +93,7 @@ void Npc::updateInteractionIcons(sf::Vector2f& mousePos)
             interactionIcon.useLimit = 0;
 
             if(!MessageBox.isDisplayed)
-                popMessageBox("Info o postaci");
+                popMessageBox(_defaultInfo);
             else
                 MessageBox.isDisplayed = false;
         }

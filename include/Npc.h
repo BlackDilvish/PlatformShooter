@@ -24,6 +24,8 @@ class Npc
         void renderAnimations(sf::RenderTarget& window);
         void freeAnimation();
 
+        void DefaultInfo(const std::string& info);
+
     private:
 
         void updateInteractionIcons(sf::Vector2f& mousePos);
@@ -48,6 +50,7 @@ class Npc
         size_t numberOfPages;
         size_t currentPage;
         std::vector<std::string> messegesVector;
+        std::string _defaultInfo;
 
         struct interIcon
         {

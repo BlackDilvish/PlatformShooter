@@ -9,10 +9,13 @@ void FileReader::AssignFile(std::string path, sf::Font& defaultFont)
 void FileReader::LoadPlatform()
 {
     float platformParams[4];
+    int platformType;
+
     for(size_t i=0; i<4 ;i++)
          _configFile>>platformParams[i];
+    _configFile>>platformType;
 
-    PlatformsManager::addPlatform(platformParams);
+    PlatformsManager::addPlatform(platformParams, platformType);
 }
 
 void FileReader::LoadEnemies(std::vector<Enemy*> &enemiesVector, std::string type)

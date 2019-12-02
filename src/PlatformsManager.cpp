@@ -1,13 +1,10 @@
 #include "PlatformsManager.h"
 
-PlatformsManager::PlatformsManager()
+void PlatformsManager::initTextures()
 {
-
-}
-
-PlatformsManager::~PlatformsManager()
-{
-
+    PlatformsManager::platformTextures[0].loadFromFile("Assets/Images/Platforms/brownPlatform.png");
+    PlatformsManager::platformTextures[1].loadFromFile("Assets/Images/Platforms/brownPlatform.png");
+    PlatformsManager::platformTextures[2].loadFromFile("Assets/Images/Platforms/brownPlatform.png");
 }
 
 void PlatformsManager::addPlatform(sf::Vector2f size, sf::Vector2f pos)
@@ -20,12 +17,12 @@ void PlatformsManager::addPlatform(sf::Vector2f size, sf::Vector2f pos)
     platformsVector.push_back(tempPlatform);
 }
 
-void PlatformsManager::addPlatform(float *platformParams)
+void PlatformsManager::addPlatform(float *platformParams, int platformType)
 {
     sf::RectangleShape tempPlatform;
     tempPlatform.setSize(sf::Vector2f(platformParams[0],platformParams[1]));
     tempPlatform.setPosition(sf::Vector2f(platformParams[2],platformParams[3]));
-    tempPlatform.setFillColor(sf::Color::Green);
+    tempPlatform.setTexture(platformTextures + platformType);
 
     platformsVector.push_back(tempPlatform);
 }
@@ -57,3 +54,4 @@ size_t PlatformsManager::getSize()
 }
 
 std::vector<sf::RectangleShape> PlatformsManager::platformsVector;
+sf::Texture PlatformsManager::platformTextures[3];

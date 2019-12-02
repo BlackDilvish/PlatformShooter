@@ -6,7 +6,7 @@
 class Blacksmith : public Npc
 {
     public:
-        Blacksmith(sf::Vector2f Position,const sf::Vector2f size = {90.f,90.f});
+        Blacksmith(sf::Vector2f Position,const sf::Vector2f size = {100.f,100.f});
         virtual ~Blacksmith();
 
     protected:

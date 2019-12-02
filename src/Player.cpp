@@ -80,6 +80,7 @@ void Player::reset(sf::Vector2f pos,sf::Vector2f mapSize, size_t maxPoints, size
 {
     playerShape.setPosition(pos);
     currentMapSize = mapSize;
+    Talks(false);
 
     _maxPoints = maxPoints;
     updatePoints(points);
@@ -196,6 +197,11 @@ void Player::updatePoints(size_t newPoints)
     std::stringstream ss;
     ss<<"Punkty: "<<_pointsCounter<<" / "<<_maxPoints;
     _pointsText.setString(ss.str());
+
+    if(_pointsCounter == _maxPoints && _pointsText.getFillColor() == sf::Color::White)
+        _pointsText.setFillColor(sf::Color::Green);
+    else if(_pointsCounter != _maxPoints && _pointsText.getFillColor() == sf::Color::Green)
+        _pointsText.setFillColor(sf::Color::White);
 }
 
 void Player::dealDamage(size_t damage, bool &gameover)

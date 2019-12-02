@@ -1,14 +1,15 @@
 mapSize: 4000.0 -400.0
 
 ***Initialising_Platforms***
-platform: 300.0 50.0 300.0 800.0
-platform: 300.0 50.0 900.0 600.0
-platform: 300.0 50.0 1500.0 800.0
-platform: 300.0 50.0 2150.0 600.0
-platform: 300.0 50.0 1500.0 400.0
-platform: 500.0 50.0 2150.0 200.0
-platform: 500.0 50.0 2850.0 200.0
-platform: 500.0 50.0 3150.0 500.0
+platform: 300.0 50.0 300.0 800.0 0
+platform: 300.0 50.0 900.0 600.0 1
+platform: 300.0 50.0 1500.0 800.0 1
+platform: 300.0 50.0 2150.0 600.0 1
+platform: 300.0 50.0 1500.0 400.0 1
+platform: 500.0 50.0 2150.0 200.0 1
+platform: 500.0 50.0 2850.0 200.0 1
+platform: 500.0 50.0 3150.0 500.0 1
+platform: 200.0 50.0 2850.0 600.0 1
 
 ***Initialising_Enemies***
 Goblin(Platform): 1
@@ -16,19 +17,41 @@ Goblin(Platform): 2
 Orc(Platform): 3
 Goblin(Platform): 4
 Orc(Platform): 5
+Goblin(Platform): 6
 Orc(Platform): 7
+Goblin(Platform): 8
 
 ***Initialising_NPC***
-BlackSmith: 200.0 980.0 120.0 100.0 2
-Kraine_nawiedzily_zle_stwory^Musisz_nam_pomoc! Zabij_je_i_idz_dalej
+BlackSmith: 200.0 980.0 120.0 100.0 4
+Witaj_grze_*wpisz_nazwe_gry*!
+Poruszasz_sie_wsadem_^(jak_juz_zauwazyles),_twoim_celem^jest_zebranie_wszystkich_monet^na_danym_poziomie.
+Do_przeciwnikow_mozesz_strzelac^korzystajac_z_wlasnosci_myszki^(a_wlasciwie_[LPM]).
+Powodzenia!
 
 BlackSmith: 3100.0 1000.0 0 0 1
-Czy_masz_juz_wszystkie_punkty?
+Gdy_juz_bedziesz_mial_wszystkie^monety,_podejdz_do_drzwi_i^nacisnij_[Spacja].
 
 ***Initialising_Objects***
 Doors: 3400.0 980.0 80.0 100.0 2
 
 ***Initialising_Collectables***
 Coin: 40.0 40.0 300.0 750.0 1
-Coin: 40.0 40.0 350.0 750.0 1
 Coin: 40.0 40.0 400.0 750.0 1
+Coin: 40.0 40.0 500.0 750.0 1
+Coin: 40.0 40.0 900.0 550.0 1
+Coin: 40.0 40.0 1000.0 550.0 1
+Coin: 40.0 40.0 1100.0 550.0 1
+Coin: 40.0 40.0 1500.0 750.0 1
+Coin: 40.0 40.0 1600.0 750.0 1
+Coin: 40.0 40.0 1500.0 350.0 1
+Coin: 40.0 40.0 1600.0 350.0 1
+Coin: 40.0 40.0 1700.0 350.0 1
+Coin: 40.0 40.0 2200.0 550.0 1
+Coin: 40.0 40.0 2400.0 550.0 1
+Coin: 40.0 40.0 2300.0 150.0 1
+Coin: 40.0 40.0 2400.0 150.0 1
+Coin: 40.0 40.0 2500.0 150.0 1
+Coin: 40.0 40.0 3200.0 450.0 1
+Coin: 40.0 40.0 3300.0 450.0 1
+Coin: 40.0 40.0 3400.0 450.0 1
+Coin: 40.0 40.0 2850.0 550.0 1
