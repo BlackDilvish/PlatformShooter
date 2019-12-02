@@ -104,8 +104,9 @@ class Game
 
         ///Backgrounds
         sf::Texture forest1Texture;
+        sf::Texture loadingTexture;
 
-        sf::Sprite mapSprite[2];
+        sf::Sprite mapSprite[3];
 };
 
 #endif // GAME_H

@@ -19,17 +19,17 @@ GameMenu::~GameMenu()
 
 void GameMenu::initCanvases(sf::Vector2u size)
 {
-    menuCanvas = new Canvas(size, sf::Color(0,0,0,100), getFont(), "Menu glowne");
-    gameoverCanvas = new Canvas(size, sf::Color(255, 0, 0, 150), getFont(), "Nie zyjesz...", sf::Color::Black);
+    menuCanvas      = new Canvas(size, sf::Color(0,0,0,100), getFont(), "Menu glowne");
+    gameoverCanvas  = new Canvas(size, sf::Color(255, 0, 0, 150), getFont(), "Nie zyjesz...", sf::Color::Black);
 
-    _titleCanvas = new Canvas(size, "Assets/Images/titleMenu.png");
+    _titleCanvas    = new Canvas(size, "Assets/Images/titleMenu.png");
 }
 
 void GameMenu::initButtons()
 {
-    resumeButton = new Button(buttonSize(), menuCanvas->getSize()/2.f - sf::Vector2f(buttonSize().x/2.f, buttonSize().y*2.f), getFont(),(char*) "Resume", sf::Color::Green);
-    optionsButton = new Button(buttonSize(), resumeButton->getPosition() + sf::Vector2f(0, buttonSize().y*2.f), getFont(),(char*) "Options", sf::Color::Blue);
-    exitButton = new Button(buttonSize(), optionsButton->getPosition() + sf::Vector2f(0, buttonSize().y*2.f), getFont(),(char*) "Exit", sf::Color::Red);
+    resumeButton   = new Button(buttonSize(), menuCanvas->getSize()/2.f - sf::Vector2f(buttonSize().x/2.f, buttonSize().y*2.f), getFont(),(char*) "Resume", sf::Color::Green);
+    optionsButton  = new Button(buttonSize(), resumeButton->getPosition() + sf::Vector2f(0, buttonSize().y*2.f), getFont(),(char*) "Options", sf::Color::Blue);
+    exitButton     = new Button(buttonSize(), optionsButton->getPosition() + sf::Vector2f(0, buttonSize().y*2.f), getFont(),(char*) "Exit", sf::Color::Red);
 
     _restartButton = new Button(buttonSize(), resumeButton->getPosition(), getFont(), "Restart", sf::Color::Blue);
 

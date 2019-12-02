@@ -17,19 +17,19 @@ void InteractionObject::setTexture(std::string path)
     objShape.setTexture(&objTex);
 }
 
-void InteractionObject::Interact()
+void InteractionObject::Interact(const Player &player)
 {
 
 }
 
-void InteractionObject::updatePlayerCollision(Player &player)
+void InteractionObject::updatePlayerCollision(const Player &player)
 {
     if(player.getGlobalBounds().intersects(objShape.getGlobalBounds()))
     {
         objShape.setFillColor(sf::Color::Yellow);
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-            Interact();
+            Interact(player);
     }
     else
         objShape.setFillColor(sf::Color::White);

@@ -6,7 +6,7 @@ Game::Game()
     initVariables();
     initImages();
     initView();
-    initMap(1);
+    initMap(0);
 }
 
 Game::~Game()
@@ -52,9 +52,11 @@ void Game::initVariables()
 void Game::initImages()
 {
     forest1Texture.loadFromFile("Assets/Images/forest1Background.png");
+    loadingTexture.loadFromFile("Assets/Images/load.png");
 
-    mapSprite[0].setTexture(forest1Texture);
+    mapSprite[0].setTexture(loadingTexture);
     mapSprite[1].setTexture(forest1Texture);
+    mapSprite[2].setTexture(forest1Texture);
 }
 
 void Game::initMap(size_t mapId)
@@ -72,14 +74,14 @@ void Game::initMap(size_t mapId)
     FileReader::AssignFile(ss.str(), defaultFont);
     FileReader::Load(enemiesVector, npcVector, doorsVector, collectVector, mapSize);
 
-    player1.reset({10,800}, mapSize);
+    player1.reset({10,800}, mapSize, collectVector.size());
     mainView.setCenter(sf::Vector2f(window->getSize())/2.f);
     setScene(currentLevel, sf::Vector2f(0, mapSize.y));
 }
 
 void Game::setScene(size_t lvl,const sf::Vector2f& pos)
 {
-    mapSprite[lvl-1].setPosition(pos);
+    mapSprite[lvl].setPosition(pos);
 }
 
 void Game::pollevents()
@@ -98,7 +100,7 @@ void Game::pollevents()
                 gameMenu->openGameover(mainView.getCenter() - sf::Vector2f(window->getSize())/2.f);
                 break;
             case sf::Keyboard::Escape:
-                if(gameMenu->getStatus() != GameMenu::title)
+                if(gameMenu->getStatus() == GameMenu::hidden)
                     gameMenu->open(mainView.getCenter() - sf::Vector2f(window->getSize())/2.f);
                 break;
             default:
@@ -151,7 +153,7 @@ void Game::updateMenu()
 
 void Game::updateEnemies()
 {
-    for(auto&& enemy : enemiesVector)
+    for(auto& enemy : enemiesVector)
         enemy->update();
 }
 
@@ -159,13 +161,13 @@ void Game::updateNpc()
 {
     sf::Vector2f deltaMove = mainView.getCenter() - sf::Vector2f(window->getSize())/2.f;
 
-    for(auto&& npc : npcVector)
+    for(auto& npc : npcVector)
         npc->update(*window, player1, deltaMove);
 }
 
 void Game::updateObjects()
 {
-    for(auto&& door : doorsVector)
+    for(auto& door : doorsVector)
     {
         door->update(player1);
 
@@ -176,7 +178,7 @@ void Game::updateObjects()
 
 void Game::updateCollect()
 {
-    for(auto&& collect : collectVector)
+    for(auto& collect : collectVector)
         collect->Update();
 }
 
@@ -200,30 +202,30 @@ void Game::update()
 void Game::renderImages() const
 {
     if(currentLevel)
-        window->draw(mapSprite[currentLevel - 1]);
+        window->draw(mapSprite[currentLevel]);
 }
 
 void Game::renderEnemies() const
 {
-    for(auto&& enemy : enemiesVector)
+    for(auto& enemy : enemiesVector)
         enemy->render(*window);
 }
 
 void Game::renderNpc() const
 {
-    for(auto&& npc : npcVector)
+    for(auto& npc : npcVector)
         npc->render(*window);
 }
 
 void Game::renderObjects() const
 {
-    for(auto&& door : doorsVector)
+    for(auto& door : doorsVector)
         door->render(*window);
 }
 
 void Game::renderCollect() const
 {
-    for(auto&& collectable : collectVector)
+    for(auto& collectable : collectVector)
         collectable->Render(*window);
 }
 
@@ -232,12 +234,16 @@ void Game::render()
     window->clear();
 
     renderImages();
-    PlatformsManager::render(*window);
-    renderEnemies();
-    renderNpc();
-    renderObjects();
-    renderCollect();
-    player1.render(*window);
+
+    if(currentLevel)
+    {
+        PlatformsManager::render(*window);
+        renderEnemies();
+        renderNpc();
+        renderObjects();
+        renderCollect();
+        player1.render(*window);
+    }
     gameMenu->render(*window);
 
     window->display();
@@ -245,7 +251,7 @@ void Game::render()
 
 void Game::freeEnemies()
 {
-    for(auto&& enemy : enemiesVector)
+    for(auto& enemy : enemiesVector)
         delete enemy;
 
     enemiesVector.clear();
@@ -253,7 +259,7 @@ void Game::freeEnemies()
 
 void Game::freeNpc()
 {
-    for(auto&& npc : npcVector)
+    for(auto& npc : npcVector)
         delete npc;
 
     npcVector.clear();
@@ -261,7 +267,7 @@ void Game::freeNpc()
 
 void Game::freeObjects()
 {
-    for(auto&& door : doorsVector)
+    for(auto& door : doorsVector)
         delete door;
 
     doorsVector.clear();
@@ -269,7 +275,7 @@ void Game::freeObjects()
 
 void Game::freeCollect()
 {
-    for(auto&& collectable : collectVector)
+    for(auto& collectable : collectVector)
         delete collectable;
 
     collectVector.clear();

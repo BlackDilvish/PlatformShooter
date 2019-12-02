@@ -13,9 +13,10 @@ Object_Doors::~Object_Doors()
 
 }
 
-void Object_Doors::Interact()
+void Object_Doors::Interact(const Player &player)
 {
-    areOpen = true;
+    if(player.FinishedLevel())
+        areOpen = true;
 }
 
 bool Object_Doors::getOpenStatus()

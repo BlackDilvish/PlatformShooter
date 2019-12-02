@@ -14,7 +14,7 @@ class Object_Doors : public InteractionObject
     protected:
 
     private:
-        void Interact();
+        void Interact(const Player &player);
 
         bool areOpen;
         size_t sceneID;

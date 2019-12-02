@@ -26,7 +26,6 @@ void Player::initVariables()
     gravity=9.81f;
     previousDirection=1;
 
-    bulletSpeed = 5.f;
     shootCooldown = 1.f;
     shootTimer = 0;
     deltaTime = 0;
@@ -46,12 +45,6 @@ void Player::initVariables()
 void Player::initShapes()
 {
     playerShape.setSize(playerSize);
-
-    tempBullet.bulletShape.setRadius(5.f);
-    tempBullet.bulletShape.setFillColor(sf::Color::Red);
-
-    tempBullet.periodOfLife = 2.f;
-    tempBullet.lifeTimer = 0;
 }
 
 void Player::initAnimations()
@@ -81,15 +74,16 @@ void Player::initHealthBar()
 
     for(size_t i=0; i<startingLife; i++)
         hearthVector.push_back(tempHearth);
-
 }
 
-void Player::reset(sf::Vector2f pos,sf::Vector2f mapSize, size_t points)
+void Player::reset(sf::Vector2f pos,sf::Vector2f mapSize, size_t maxPoints, size_t points)
 {
     playerShape.setPosition(pos);
     currentMapSize = mapSize;
 
+    _maxPoints = maxPoints;
     updatePoints(points);
+
     resetHealth();
 }
 
@@ -101,9 +95,6 @@ void Player::updateTime()
 
     if(invulnerableFlag)
         invulnerableTimer += deltaTime;
-
-    for(size_t i=0; i<bulletsVector.size(); i++)
-        bulletsVector[i].lifeTimer += deltaTime;
 
     deltaTime = 0;
     clock.restart();
@@ -203,7 +194,7 @@ void Player::updatePoints(size_t newPoints)
     _pointsCounter = newPoints;
 
     std::stringstream ss;
-    ss<<"Punkty: "<<_pointsCounter;
+    ss<<"Punkty: "<<_pointsCounter<<" / "<<_maxPoints;
     _pointsText.setString(ss.str());
 }
 
@@ -244,27 +235,23 @@ void Player::updateShooting(sf::RenderWindow& window, sf::View view)
         shootTimer = 0;
 
         sf::Vector2f playerPos = (getPosition() + getSize()/2.f) - (view.getCenter() - sf::Vector2f(window.getSize())/2.f);
+        sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(window));
 
-        sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(window)) - playerPos;
-        float mouseSize = sqrt(pow(mousePos.x,2) + pow(mousePos.y,2));
-        mousePos /= mouseSize;
+        ///Calculating vector and normalizing it
+        sf::Vector2f shotVector = mousePos - playerPos;
+        float size = sqrt(pow(shotVector.x,2) + pow(shotVector.y,2));
+        shotVector /= size;
 
-        tempBullet.bulletShape.setPosition(getPosition() + getSize()/2.f);
-        tempBullet.bulletTrajectory = mousePos*bulletSpeed;
-
-        bulletsVector.push_back(tempBullet);
+        _bulletsVector.push_back(Bullet(getPosition()+getSize()/2.f, shotVector));
     }
 
-    for(size_t i=0; i<bulletsVector.size(); i++)
+    for(size_t i=0; i<_bulletsVector.size(); i++)
     {
-        bulletsVector[i].bulletShape.move(bulletsVector[i].bulletTrajectory);
+        _bulletsVector[i].Update();
 
-        if(bulletsVector[i].lifeTimer > bulletsVector[i].periodOfLife)
-        {
-            bulletsVector.erase(bulletsVector.begin() + i);
-        }
+        if(_bulletsVector[i].Dead())
+            _bulletsVector.erase(_bulletsVector.begin() + i);
     }
-
 }
 
 void Player::updateEnemiesInteraction(std::vector<Enemy*> &enemiesVector, bool &gameover)
@@ -274,8 +261,8 @@ void Player::updateEnemiesInteraction(std::vector<Enemy*> &enemiesVector, bool &
         if(playerShape.getGlobalBounds().intersects(enemiesVector[i]->getGlobalBounds()))
             dealDamage(1, gameover);
 
-        for(size_t j=0; j<bulletsVector.size(); j++)
-            if(bulletsVector[j].bulletShape.getGlobalBounds().intersects(enemiesVector[i]->getGlobalBounds()))
+        for(size_t j=0; j<_bulletsVector.size(); j++)
+            if(_bulletsVector[j].Hit(enemiesVector[i]->getGlobalBounds()))
             {
                 if(enemiesVector[i]->getHP() > 1)
                     enemiesVector[i]->setHP(enemiesVector[i]->getHP() - 1);
@@ -285,7 +272,7 @@ void Player::updateEnemiesInteraction(std::vector<Enemy*> &enemiesVector, bool &
                     enemiesVector.erase(enemiesVector.begin() + i);
                 }
 
-                bulletsVector.erase(bulletsVector.begin() + j);
+                _bulletsVector.erase(_bulletsVector.begin() + j);
 
             }
     }
@@ -400,6 +387,7 @@ void Player::renderHealthBar(sf::RenderTarget &window) const
 {
     for(size_t i=0; i<hearthVector.size(); i++)
         window.draw(hearthVector[i]);
+
     window.draw(_pointsText);
 }
 
@@ -415,8 +403,8 @@ void Player::render(sf::RenderTarget &window) const
         else
             idleAnimationLeft->render(window);
 
-    for(size_t i=0; i<bulletsVector.size(); i++)
-        window.draw(bulletsVector[i].bulletShape);
+    for(size_t i=0; i<_bulletsVector.size(); i++)
+        _bulletsVector[i].Render(window);
 
     renderHealthBar(window);
 }
@@ -434,7 +422,8 @@ void Player::deleteAnimations()
     delete idleAnimationLeft;
 }
 
-sf::Vector2f Player::getPosition()  const         {return playerShape.getPosition();       }
-sf::Vector2f Player::getSize()    const           {return playerShape.getSize();           }
-sf::FloatRect Player::getGlobalBounds() const     {return playerShape.getGlobalBounds();   }
-void Player::Talks(bool state)                    {_talks = state;                         }
+sf::Vector2f Player::getPosition()  const         { return playerShape.getPosition();       }
+sf::Vector2f Player::getSize()    const           { return playerShape.getSize();           }
+sf::FloatRect Player::getGlobalBounds() const     { return playerShape.getGlobalBounds();   }
+void Player::Talks(bool state)                    { _talks = state;                         }
+bool Player::FinishedLevel() const                { return _pointsCounter == _maxPoints;    }

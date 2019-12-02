@@ -9,6 +9,7 @@
 #include<sstream>
 #include<math.h>
 #include"PlatformsManager.h"
+#include"Bullet.h"
 #include"Enemy.h"
 #include"Goblin.h"
 #include"Animation.h"
@@ -23,8 +24,9 @@ class Player
         void render(sf::RenderTarget &window) const;
         void update(sf::RenderWindow &window, sf::View view,bool &gameOver,std::vector<Enemy*> &enemiesVector,std::vector<Collectable*> &collectableVector);
 
-        void reset(sf::Vector2f pos,sf::Vector2f mapSize, size_t points = 0);
+        void reset(sf::Vector2f pos,sf::Vector2f mapSize, size_t maxPoints, size_t points = 0);
         void Talks(bool state);
+        bool FinishedLevel() const;
 
         sf::Vector2f getSize() const;
         sf::Vector2f getPosition() const;
@@ -68,6 +70,7 @@ class Player
         float movementSpeed;
         float gravity;
         bool inSpace;
+        bool previousDirection;
 
         bool collidingTop;
         bool _talks;
@@ -76,20 +79,10 @@ class Player
         float deltaTime;
         ///Bullets
 
-        struct Bullet
-        {
-            sf::CircleShape bulletShape;
-            sf::Vector2f bulletTrajectory;
+        std::vector<Bullet> _bulletsVector;
 
-            float periodOfLife;
-            float lifeTimer;
-        }tempBullet;
-
-        std::vector<Bullet> bulletsVector;
-        float bulletSpeed;
         float shootCooldown;
         float shootTimer;
-        bool previousDirection;
         ///HealthBar
 
         sf::Texture hearthTex;
@@ -105,6 +98,7 @@ class Player
 
         sf::Text _pointsText;
         size_t _pointsCounter;
+        size_t _maxPoints;
         ///Animation
 
         Animation* runAnimationRight;

@@ -106,11 +106,11 @@ void FileReader::LoadMapSize(sf::Vector2f& mapSize)
     _configFile>>mapSize.y;
 }
 
-void FileReader::Load(std::vector<Enemy*> &enemiesVector,
-                             std::vector<Npc*> &npcVector,
-                             std::vector<Object_Doors*> &doorsVector,
-                             std::vector<Collectable*> &collectVector,
-                             sf::Vector2f& mapSize)
+void FileReader::Load(std::vector<Enemy*>&        enemiesVector,
+                      std::vector<Npc*>&          npcVector,
+                      std::vector<Object_Doors*>& doorsVector,
+                      std::vector<Collectable*>&  collectVector,
+                      sf::Vector2f&               mapSize)
 {
     _configFile.open(_path);
 

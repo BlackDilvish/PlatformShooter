@@ -17,10 +17,10 @@ class InteractionObject
 
     protected:
         void setTexture(std::string path);
-        virtual void Interact();
+        virtual void Interact(const Player &player);
 
     private:
-        void updatePlayerCollision(Player &player);
+        void updatePlayerCollision(const Player &player);
 
 
         sf::RectangleShape objShape;
