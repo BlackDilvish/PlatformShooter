@@ -22,6 +22,12 @@ Canvas::Canvas(sf::Vector2u size, std::string path)
     _canvasShape.setTexture(&_canvasTexture);
 }
 
+Canvas::Canvas(sf::Vector2u size, sf::Color canvasColor)
+{
+    _canvasShape.setSize(sf::Vector2f(size));
+    _canvasShape.setFillColor(canvasColor);
+}
+
 Canvas::~Canvas()
 {
 
@@ -35,6 +41,11 @@ sf::Vector2f Canvas::getSize() const
 sf::Vector2f Canvas::getPosition() const
 {
     return _canvasShape.getPosition();
+}
+
+sf::FloatRect Canvas::getGlobalBounds() const
+{
+    return _canvasShape.getGlobalBounds();
 }
 
 void Canvas::render(sf::RenderTarget& window)

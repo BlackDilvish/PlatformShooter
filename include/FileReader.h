@@ -26,9 +26,13 @@ class FileReader
                          std::vector<Collectable*> &collectVector,
                          sf::Vector2f& mapSize);
 
-        static void AssignFile(std::string path, sf::Font& defaultFont);
+        static void AssignFile(size_t mapId, sf::Font& defaultFont);
 
     private:
+        FileReader() = default;
+        ~FileReader() = default;
+
+        ///Load functions
 
         static void LoadPlatform();
         static void LoadEnemies(std::vector<Enemy*> &enemiesVector, std::string type);
@@ -38,6 +42,11 @@ class FileReader
         static void LoadCollectables(std::vector<Collectable*> &collectVector);
         static void LoadMapSize(sf::Vector2f& mapSize);
 
+        ///Utilities functions
+
+        static std::string FileToString(size_t id);
+
+        ///Variables
 
         static std::ifstream _configFile;
         static std::string _path;

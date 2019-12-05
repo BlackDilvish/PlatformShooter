@@ -6,6 +6,7 @@
 #include<sstream>
 #include<fstream>
 #include<SFML/Graphics.hpp>
+#include"Icon.h"
 #include"Player.h"
 #include"PlatformsManager.h"
 #include"Enemy.h"
@@ -47,6 +48,7 @@ class Game
         void pollevents();
         void updateView();
         void updateMenu();
+        void updateExit();
         void updateEnemies();
         void updateNpc();
         void updateObjects();

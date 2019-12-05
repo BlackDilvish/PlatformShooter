@@ -10,6 +10,7 @@ class Canvas
     public:
         Canvas(sf::Vector2u size, sf::Color canvasColor,const sf::Font& font, std::string text = "", sf::Color textColor = sf::Color::White);
         Canvas(sf::Vector2u size, std::string path);
+        Canvas(sf::Vector2u size, sf::Color canvasColor);
         virtual ~Canvas();
 
         void render(sf::RenderTarget& window);
@@ -17,6 +18,7 @@ class Canvas
 
         sf::Vector2f getSize() const;
         sf::Vector2f getPosition() const;
+        sf::FloatRect getGlobalBounds() const;
 
     private:
         sf::RectangleShape _canvasShape;

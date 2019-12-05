@@ -6,10 +6,12 @@ Button::Button(sf::Vector2f size, sf::Vector2f pos)
     _buttonShape.setPosition(pos);
 }
 
-Button::Button(sf::Vector2f size, sf::Vector2f pos, sf::Font& font, std::string text, sf::Color color, size_t charSize)
+Button::Button(sf::Vector2f size, sf::Vector2f pos, sf::Font& font, std::string text, sf::Color lightColor, sf::Color defaultColor, size_t charSize)
+    : _lightColor(lightColor), _defaultColor(defaultColor)
 {
     _buttonShape.setSize(size);
     _buttonShape.setPosition(pos);
+    _buttonShape.setFillColor(defaultColor);
 
     _buttonText.setFont(font);
     _buttonText.setString(text);
@@ -17,8 +19,6 @@ Button::Button(sf::Vector2f size, sf::Vector2f pos, sf::Font& font, std::string 
 
     sf::Vector2f shift = sf::Vector2f(-size.x + _buttonText.findCharacterPos(_buttonText.getString().getSize()).x - _buttonText.findCharacterPos(0).x, 0)/2.f;
     _buttonText.setPosition(pos - shift);
-
-    _buttonColor = color;
 }
 
 Button::~Button()
@@ -39,12 +39,18 @@ bool Button::hovers(sf::Vector2f cursorPos) const
 
 void Button::Light()
 {
-    _buttonShape.setFillColor(_buttonColor);
+    if(_buttonShape.getFillColor() == sf::Color::Transparent)
+        _buttonText.setFillColor(_lightColor);
+    else
+        _buttonShape.setFillColor(_lightColor);
 }
 
 void Button::Dark()
 {
-    _buttonShape.setFillColor(sf::Color::White);
+    if(_buttonShape.getFillColor() == sf::Color::Transparent)
+        _buttonText.setFillColor(sf::Color::White);
+    else
+        _buttonShape.setFillColor(_defaultColor);
 }
 
 sf::Vector2f Button::getSize() const

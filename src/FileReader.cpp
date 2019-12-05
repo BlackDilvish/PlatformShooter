@@ -1,8 +1,9 @@
 #include "FileReader.h"
 
-void FileReader::AssignFile(std::string path, sf::Font& defaultFont)
+void FileReader::AssignFile(size_t mapId, sf::Font& defaultFont)
 {
-    _path = path;
+    _path = FileReader::FileToString(mapId);
+    std::cout<<"Otwieranie: "<<_path<<"\n";
     _defaultFont = defaultFont;
 }
 
@@ -143,6 +144,14 @@ void FileReader::Load(std::vector<Enemy*>&        enemiesVector,
     }
     else
         std::cout<<"Brak pliku\n";
+}
+
+std::string FileReader::FileToString(size_t id)
+{
+    std::stringstream ss;
+    ss<<"Assets/Data/level"<<id<<".txt";
+
+    return ss.str();
 }
 
 std::string FileReader::_path;

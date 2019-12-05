@@ -26,6 +26,7 @@ void Game::initWindow()
 
     window = new sf::RenderWindow(videomode, "Platformer", sf::Style::Fullscreen);
     window->setFramerateLimit(60);
+    window->setIcon(knightIcon.width, knightIcon.height, knightIcon.pixel_data);
 
     gameMenu = new GameMenu(window->getSize());
 }
@@ -70,10 +71,7 @@ void Game::initMap(size_t mapId)
     freeCollect();
     PlatformsManager::clear();
 
-    std::stringstream ss;
-    ss<<"Assets/Data/level"<<mapId<<".txt";
-
-    FileReader::AssignFile(ss.str(), defaultFont);
+    FileReader::AssignFile(mapId, defaultFont);
     FileReader::Load(enemiesVector, npcVector, doorsVector, collectVector, mapSize);
 
     player1.reset({10,800}, mapSize, collectVector.size());
@@ -99,7 +97,7 @@ void Game::pollevents()
             switch(event.key.code)
             {
             case sf::Keyboard::T:
-                gameMenu->openGameover(mainView.getCenter() - sf::Vector2f(window->getSize())/2.f);
+                player1.reset({1400.f, 900.f}, mapSize, 20, 20);
                 break;
             case sf::Keyboard::Escape:
                 if(gameMenu->getStatus() == GameMenu::hidden)
@@ -142,7 +140,10 @@ void Game::updateMenu()
     }
 
     gameMenu->update(*window,gameover);
+}
 
+void Game::updateExit()
+{
     if(gameMenu->getStatus() != GameMenu::gameOver && isDead)
     {
         gameMenu->openGameover(mainView.getCenter() - sf::Vector2f(window->getSize())/2.f);
@@ -199,6 +200,7 @@ void Game::update()
 
     updateView();
     updateMenu();
+    updateExit();
 }
 
 void Game::renderImages() const

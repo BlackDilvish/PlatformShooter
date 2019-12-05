@@ -6,6 +6,7 @@
 #include"Button.h"
 #include"Canvas.h"
 #include"IMenu.h"
+#include"LevelEditor.h"
 
 class GameMenu : public IMenu
 {
@@ -21,12 +22,19 @@ class GameMenu : public IMenu
 
         void setPosition(sf::Vector2f deltaMove);
 
-        enum state {title, newGame, hidden, main, options, restart, gameOver};
+        enum state {title, newGame, hidden, main, options, restart, gameOver, inEditor};
     private:
 
         ///Functions
         void initCanvases(sf::Vector2u size);
         void initButtons();
+        void initEditor(sf::Vector2u size);
+        void openEditor();
+
+        void updateMainmenu(const sf::Vector2f& mousePos);
+        void updateTitlemenu(const sf::Vector2f& mousePos, bool& gameover);
+        void updateGameoverMenu(const sf::Vector2f& mousePos);
+        void updateEditor(const sf::Vector2f& mousePos);
 
         void deleteCanvases();
         void deleteButtons();
@@ -49,6 +57,10 @@ class GameMenu : public IMenu
             Button* _newGameButton;
             Button* _optionsButton;
             Button* _exitButton;
+
+            ///Editor
+
+            LevelEditor* _levelEditor;
 };
 
 #endif // MENU_H
