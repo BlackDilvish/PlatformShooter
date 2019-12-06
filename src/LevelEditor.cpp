@@ -16,6 +16,7 @@ LevelEditor::~LevelEditor()
     delete _map;
 
     delete _exitButton;
+    delete _saveButton;
 
     for(auto& button : _objectsButtonVector)
         delete button;
@@ -24,6 +25,7 @@ LevelEditor::~LevelEditor()
 void LevelEditor::initButtons(sf::Font& font)
 {
     _exitButton = new Button({200.f, 100.f}, _editorCanvas->getSize() - sf::Vector2f(200.f, 100.f), font, "Exit", sf::Color::Blue);
+    _saveButton = new Button({200.f, 100.f}, _editorCanvas->getSize() - sf::Vector2f(200.f, 100.f + _exitButton->getSize().y*2), font, "Save", sf::Color::Green);
 
     for(size_t i=0; i<6; i++)
         _objectsButtonVector.push_back(new Button({150.f, 50.f}, sf::Vector2f(200.f*i, _map->getSize().y + 100.f), font, _stringsVector[i], sf::Color(10*i, 10*i, 10*i), sf::Color::White, 20));
@@ -68,8 +70,8 @@ void LevelEditor::updateItems(const sf::Vector2f& mousePos)
     {
         _objectsVector[_clickedItem].setPosition(mousePos);
 
-        if(Clicked(mousePos))
-            AddToFile(_clickedItem, PositionOnMap(mousePos));
+        if(ClickedOnMap(mousePos))
+            AddToMap(_clickedItem, PositionOnMap(mousePos));
     }
 
 }
@@ -83,8 +85,16 @@ void LevelEditor::updateButtons(const sf::Vector2f& mousePos)
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             _clickedItem = -1;
+            _addedToMapObjectsVector.clear();
             _currentState = LevelEditor::closed;
         }
+    }
+    else if(_saveButton->hovers(mousePos))
+    {
+        _saveButton->Light();
+
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            SaveInFile();
     }
     else
     {
@@ -96,13 +106,13 @@ void LevelEditor::updateButtons(const sf::Vector2f& mousePos)
                 if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
                 {
                     _clickedItem = i;
-                    std::cout<<i<<"\n";
                 }
             }
             else
                 _objectsButtonVector[i]->Dark();
 
         _exitButton->Dark();
+        _saveButton->Dark();
     }
 }
 
@@ -133,9 +143,13 @@ void LevelEditor::Render(sf::RenderTarget& window)
     _map->render(window);
 
     _exitButton->render(window);
+    _saveButton->render(window);
 
     for(auto& button : _objectsButtonVector)
         button->render(window);
+
+    for(auto& icon : _addedToMapObjectsVector)
+        window.draw(icon);
 
     renderItems(window);
 }
@@ -146,9 +160,13 @@ void LevelEditor::Move(sf::Vector2f& distance)
     _map->move(distance);
 
     _exitButton->move(distance);
+    _saveButton->move(distance);
 
     for(auto& button : _objectsButtonVector)
         button->move(distance);
+
+    for(auto& icon : _addedToMapObjectsVector)
+        icon.move(distance);
 }
 
 size_t LevelEditor::GetState()
@@ -166,12 +184,22 @@ sf::Vector2f LevelEditor::PositionOnMap(const sf::Vector2f& mousePos)
     return (mousePos - sf::Vector2f(0, 180.f)) * 2.f;
 }
 
-bool LevelEditor::Clicked(const sf::Vector2f& mousePos)
+bool LevelEditor::ClickedOnMap(const sf::Vector2f& mousePos)
 {
     return sf::Mouse::isButtonPressed(sf::Mouse::Left) && _map->getGlobalBounds().contains(mousePos);
 }
 
-void LevelEditor::AddToFile(size_t id, const sf::Vector2f& position)
+void LevelEditor::AddToMap(size_t id, const sf::Vector2f& position)
 {
     std::cout<<"ID: "<<id<<" x: "<<position.x<<" y: "<<position.y<<"\n";
+
+    _addedToMapObjectsVector.push_back(sf::RectangleShape(_objectsVector[id]));
+    _clickedItem = -1;
+}
+
+void LevelEditor::SaveInFile()
+{
+    ///saving via FileWriter
+
+    _addedToMapObjectsVector.clear();
 }

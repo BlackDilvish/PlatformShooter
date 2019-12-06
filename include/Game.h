@@ -6,6 +6,7 @@
 #include<sstream>
 #include<fstream>
 #include<SFML/Graphics.hpp>
+#include"KnightIcon.h"
 #include"Icon.h"
 #include"Player.h"
 #include"PlatformsManager.h"

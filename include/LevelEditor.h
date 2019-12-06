@@ -35,21 +35,29 @@ class LevelEditor
 
         void renderItems(sf::RenderTarget& window);
 
-        bool Clicked(const sf::Vector2f& mousePos);
+        bool ClickedOnMap(const sf::Vector2f& mousePos);
         sf::Vector2f PositionOnMap(const sf::Vector2f& mousePos);
-        void AddToFile(size_t id, const sf::Vector2f& position);
+
+        void AddToMap(size_t id, const sf::Vector2f& position);
+        void SaveInFile();
+
+        ///Variables
 
         size_t _currentState;
         int _clickedItem;
 
         Canvas* _editorCanvas;
+        Canvas* _map;
+
+        Button* _saveButton;
         Button* _exitButton;
 
-        Canvas* _map;
 
         std::vector<Button*> _objectsButtonVector;
         std::vector<std::string> _stringsVector;
         std::vector<sf::RectangleShape> _objectsVector;
+
+        std::vector<sf::RectangleShape> _addedToMapObjectsVector;
 
 };
 
