@@ -1,8 +1,8 @@
 #include "Enemy.h"
 
-Enemy::Enemy(sf::RectangleShape &platform)
+Enemy::Enemy(sf::RectangleShape &platform, sf::Vector2f size)
 {
-    enemyShape.setSize(sf::Vector2f(100.f, 100.f));
+    enemyShape.setSize(size);
     enemyShape.setPosition(sf::Vector2f(platform.getPosition().x + platform.getSize().x/2.f, platform.getPosition().y - enemyShape.getSize().y));
 
     movingRange.x = platform.getPosition().x;
@@ -13,9 +13,9 @@ Enemy::Enemy(sf::RectangleShape &platform)
 
 }
 
-Enemy::Enemy(const sf::Vector2f &Position,const sf::Vector2f &Range)
+Enemy::Enemy(const sf::Vector2f &Position,const sf::Vector2f &Range, const sf::Vector2f& size)
 {
-    enemyShape.setSize(sf::Vector2f(100.f, 100.f));
+    enemyShape.setSize(size);
     enemyShape.setPosition(Position);
 
     movingRange = Range;
@@ -26,7 +26,7 @@ Enemy::Enemy(const sf::Vector2f &Position,const sf::Vector2f &Range)
 
 Enemy::Enemy(float *enemyParams)
 {
-    enemyShape.setSize(sf::Vector2f(100.f,100.f));
+    enemyShape.setSize(sf::Vector2f(enemyParams[4],enemyParams[5]));
     enemyShape.setPosition(enemyParams[0],enemyParams[1]);
 
     movingRange = {enemyParams[2], enemyParams[3]};

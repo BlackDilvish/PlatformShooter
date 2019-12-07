@@ -1,9 +1,9 @@
 mapSize: 4000.0 -400.0
 
 ***Initialising_Platforms***
-platform: 300.0 50.0 200.0 200.0 1
-platform: 300.0 50.0 800.0 400.0 1
-platform: 400.0 50.0 1500.0 300.0 1
+Platform: 200.0 200.0  300.0 50.0 1  
+Platform: 800.0 400.0  300.0 50.0 1
+Platform: 1500.0 300.0 400.0 50.0 1
 
 ***Initialising_Enemies***
 Goblin(Platform): 1
@@ -17,6 +17,6 @@ Tworca_zrobi_w_edytorze
 Doors: 3400.0 980.0 80.0 100.0 1
 
 ***Initialising_Collectables***
-Coin: 40.0 40.0 300.0 750.0 1
-Coin: 40.0 40.0 400.0 750.0 1
-Coin: 40.0 40.0 500.0 750.0 1
+Coin: 300.0 750.0 0 0 0
+Coin: 400.0 750.0 0 0 0
+Coin: 500.0 750.0 0 0 0

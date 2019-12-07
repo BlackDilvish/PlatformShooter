@@ -7,7 +7,7 @@
 class PlatformsManager
 {
     public:
-        static void addPlatform(sf::Vector2f size, sf::Vector2f pos);
+        static void addPlatform(sf::Vector2f pos, sf::Vector2f size = {300.f, 50.f});
         static void addPlatform(float *platformParams, int platformType);
         static void render(sf::RenderTarget &window);
 

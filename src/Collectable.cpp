@@ -1,6 +1,6 @@
 #include "Collectable.h"
 
-Collectable::Collectable(sf::Vector2f size, sf::Vector2f pos, size_t value = 1)
+Collectable::Collectable(sf::Vector2f pos, sf::Vector2f size, size_t value)
 {
     _shape.setSize(size);
     _shape.setPosition(pos);

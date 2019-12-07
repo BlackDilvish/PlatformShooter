@@ -11,8 +11,8 @@
 class Enemy
 {
     public:
-        Enemy(sf::RectangleShape &platform);
-        Enemy(const sf::Vector2f &Position,const sf::Vector2f &Range);
+        Enemy(sf::RectangleShape &platform, sf::Vector2f size = {100.f, 100.f});
+        Enemy(const sf::Vector2f &Position,const sf::Vector2f &Range, const sf::Vector2f& size = {100.f, 100.f});
         Enemy(float *enemyParams);
         virtual ~Enemy();
 

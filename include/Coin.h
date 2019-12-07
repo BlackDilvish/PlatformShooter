@@ -7,7 +7,7 @@
 class Coin : public Collectable
 {
     public:
-        Coin(sf::Vector2f size, sf::Vector2f pos, size_t value);
+        Coin(sf::Vector2f pos, sf::Vector2f size = {40.f, 40.f}, size_t value = 1);
         virtual ~Coin();
 
     private:

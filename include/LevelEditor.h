@@ -6,6 +6,8 @@
 #include<vector>
 #include"Canvas.h"
 #include"Button.h"
+#include"EditorItem.h"
+#include"FileWriter.h"
 
 
 class LevelEditor
@@ -35,8 +37,11 @@ class LevelEditor
 
         void renderItems(sf::RenderTarget& window);
 
+        void ClearItems();
+
         bool ClickedOnMap(const sf::Vector2f& mousePos);
-        sf::Vector2f PositionOnMap(const sf::Vector2f& mousePos);
+        void CheckIfClickedItem();
+        bool IsPlatformBusy(size_t id);
 
         void AddToMap(size_t id, const sf::Vector2f& position);
         void SaveInFile();
@@ -52,13 +57,14 @@ class LevelEditor
         Button* _saveButton;
         Button* _exitButton;
 
-
-        std::vector<Button*> _objectsButtonVector;
+        std::vector<Button*> _itemsButtonVector;
         std::vector<std::string> _stringsVector;
-        std::vector<sf::RectangleShape> _objectsVector;
+        std::vector<EditorItem*> _itemsVector;
 
-        std::vector<sf::RectangleShape> _addedToMapObjectsVector;
+        std::vector<EditorItem*> _addedToMapItemsVector;
 
 };
+
+sf::Vector2f PositionOnMap(const sf::Vector2f& mousePos);
 
 #endif // LEVELEDITOR_H

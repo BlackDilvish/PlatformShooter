@@ -98,7 +98,7 @@ void Npc::updateInteractionIcons(sf::Vector2f& mousePos)
                 MessageBox.isDisplayed = false;
         }
     }
-    else if(dialogIcon.icon.getGlobalBounds().contains(mousePos))
+    else if(numberOfPages && dialogIcon.icon.getGlobalBounds().contains(mousePos))
     {
         dialogIcon.icon.setFillColor(sf::Color::Red);
 
@@ -184,7 +184,9 @@ void Npc::update(sf::RenderWindow& window, Player& player, sf::Vector2f& deltaMo
     }
 
     updateInteractionIcons(mousePos);
-    updateDialogBox(mousePos);
+
+    if(numberOfPages)
+        updateDialogBox(mousePos);
 
 }
 
@@ -199,7 +201,7 @@ void Npc::render(sf::RenderTarget& window)
 
     if(interactionIcon.isDisplayed)
         window.draw(interactionIcon.icon);
-    if(dialogIcon.isDisplayed)
+    if(numberOfPages && dialogIcon.isDisplayed)
         window.draw(dialogIcon.icon);
 
     if(MessageBox.isDisplayed)

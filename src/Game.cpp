@@ -58,6 +58,7 @@ void Game::initImages()
     mapSprite[0].setTexture(loadingTexture);
     mapSprite[1].setTexture(forest1Texture);
     mapSprite[2].setTexture(forest1Texture);
+    mapSprite[3].setTexture(forest1Texture);
 
     PlatformsManager::initTextures();
 }
@@ -98,6 +99,9 @@ void Game::pollevents()
             {
             case sf::Keyboard::T:
                 player1.reset({1400.f, 900.f}, mapSize, 20, 20);
+                break;
+            case sf::Keyboard::Y:
+                initMap(3);
                 break;
             case sf::Keyboard::Escape:
                 if(gameMenu->getStatus() == GameMenu::hidden)
@@ -243,9 +247,9 @@ void Game::render()
     {
         PlatformsManager::render(*window);
         renderEnemies();
-        renderNpc();
         renderObjects();
         renderCollect();
+        renderNpc();
         player1.render(*window);
     }
     gameMenu->render(*window);

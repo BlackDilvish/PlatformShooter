@@ -7,7 +7,7 @@ void PlatformsManager::initTextures()
     PlatformsManager::platformTextures[2].loadFromFile("Assets/Images/Platforms/brownPlatform.png");
 }
 
-void PlatformsManager::addPlatform(sf::Vector2f size, sf::Vector2f pos)
+void PlatformsManager::addPlatform(sf::Vector2f pos, sf::Vector2f size)
 {
     sf::RectangleShape tempPlatform;
     tempPlatform.setSize(size);
@@ -20,8 +20,8 @@ void PlatformsManager::addPlatform(sf::Vector2f size, sf::Vector2f pos)
 void PlatformsManager::addPlatform(float *platformParams, int platformType)
 {
     sf::RectangleShape tempPlatform;
-    tempPlatform.setSize(sf::Vector2f(platformParams[0],platformParams[1]));
-    tempPlatform.setPosition(sf::Vector2f(platformParams[2],platformParams[3]));
+    tempPlatform.setPosition(sf::Vector2f(platformParams[0],platformParams[1]));
+    tempPlatform.setSize(sf::Vector2f(platformParams[2],platformParams[3]));
     tempPlatform.setTexture(platformTextures + platformType);
 
     platformsVector.push_back(tempPlatform);

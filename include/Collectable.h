@@ -9,7 +9,7 @@
 class Collectable
 {
     public:
-        Collectable(sf::Vector2f size, sf::Vector2f pos, size_t value);
+        Collectable(sf::Vector2f pos, sf::Vector2f size, size_t value);
         virtual ~Collectable() = default;
 
         void Update();

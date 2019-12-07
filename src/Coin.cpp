@@ -1,6 +1,6 @@
 #include "Coin.h"
 
-Coin::Coin(sf::Vector2f size, sf::Vector2f pos, size_t value) : Collectable(size, pos, value)
+Coin::Coin(sf::Vector2f pos, sf::Vector2f size, size_t value) : Collectable(pos, size, value)
 {
     _path = "Assets/Images/Coin.png";
     _nOfFrames = 8;

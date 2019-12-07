@@ -21,8 +21,8 @@ void FileReader::LoadPlatform()
 
 void FileReader::LoadEnemies(std::vector<Enemy*> &enemiesVector, std::string type)
 {
-    float enemyParams[4];
-    for(size_t i=0; i<4 ;i++)
+    float enemyParams[6];
+    for(size_t i=0; i<6 ;i++)
          _configFile>>enemyParams[i];
 
     if(type == "Goblin:")
@@ -93,15 +93,15 @@ void FileReader::LoadDoors(std::vector<Object_Doors*> &doorsVector)
 void FileReader::LoadCollectables(std::vector<Collectable*> &collectVector)
 {
     float collectParams[4];
-    size_t value;
 
     for(auto i : {0,1,2,3})
         _configFile>>collectParams[i];
-    _configFile>>value;
 
-    collectVector.push_back(new Coin({collectParams[0], collectParams[1]},
-                                     {collectParams[2], collectParams[3]},
-                                      value));
+    if(collectParams[2] < 0.1 && collectParams[3] < 0.1)
+        collectVector.push_back(new Coin({collectParams[0], collectParams[1]}));
+    else
+        collectVector.push_back(new Coin({collectParams[0], collectParams[1]},
+                                         {collectParams[2], collectParams[3]}));
 }
 
 void FileReader::LoadMapSize(sf::Vector2f& mapSize)
@@ -124,7 +124,7 @@ void FileReader::Load(std::vector<Enemy*>&        enemiesVector,
 
         while(_configFile>>type)
         {
-            if(type == "platform:")
+            if(type == "Platform:")
                 FileReader::LoadPlatform();
             else if(type == "Goblin(Platform):" || type == "Orc(Platform):")
                 FileReader::LoadEnemiesPlatform(enemiesVector, type);
