@@ -16,6 +16,8 @@ GameMenu::~GameMenu()
     deleteCanvases();
     deleteButtons();
     deleteFont();
+
+    delete _levelEditor;
 }
 
 void GameMenu::initCanvases(sf::Vector2u size)
@@ -36,7 +38,9 @@ void GameMenu::initButtons()
 
     _newGameButton = new Button(buttonSize(), _titleCanvas->getSize()/6.f, getFont(), "New Game", sf::Color::Red, sf::Color::Transparent, 42);
     _optionsButton = new Button(buttonSize(), _titleCanvas->getSize()/6.f + sf::Vector2f(0, 2*buttonSize().y), getFont(), "Options", sf::Color::Red, sf::Color::Transparent, 42);
-    _exitButton    = new Button(buttonSize(), _titleCanvas->getSize()/6.f + sf::Vector2f(0, 4*buttonSize().y), getFont(), "Exit", sf::Color::Red, sf::Color::Transparent, 42);
+    _editorButton  = new Button(buttonSize(), _titleCanvas->getSize()/6.f + sf::Vector2f(0, 4*buttonSize().y), getFont(), "Level editor", sf::Color::Red, sf::Color::Transparent, 42);
+    _exitButton    = new Button(buttonSize(), _titleCanvas->getSize()/6.f + sf::Vector2f(0, 8*buttonSize().y), getFont(), "Exit", sf::Color::Red, sf::Color::Transparent, 42);
+
 
 }
 
@@ -96,21 +100,28 @@ void GameMenu::updateTitlemenu(const sf::Vector2f& mousePos, bool& gameover)
         _optionsButton->Light();
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
-            openEditor();
+            std::cout<<"Opcje";
     }
     else if(_exitButton->hovers(mousePos))
     {
-
         _exitButton->Light();
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
             gameover = true;
+    }
+    else if(_editorButton->hovers(mousePos))
+    {
+        _editorButton->Light();
+
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            openEditor();
     }
     else
     {
         _newGameButton->Dark();
         _optionsButton->Dark();
         _exitButton->Dark();
+        _editorButton->Dark();
     }
 }
 
@@ -192,6 +203,7 @@ void GameMenu::render(sf::RenderTarget& window) const
         _newGameButton->render(window);
         _optionsButton->render(window);
         _exitButton->render(window);
+        _editorButton->render(window);
         break;
     case GameMenu::inEditor:
         _levelEditor->Render(window);
@@ -216,6 +228,7 @@ void GameMenu::setPosition(sf::Vector2f deltaMove)
     _newGameButton->move(deltaMove);
     _optionsButton->move(deltaMove);
     _exitButton->move(deltaMove);
+    _editorButton->move(deltaMove);
 
     _levelEditor->Move(deltaMove);
 }
@@ -261,4 +274,5 @@ void GameMenu::deleteButtons()
     delete _newGameButton;
     delete _optionsButton;
     delete _exitButton;
+    delete _editorButton;
 }

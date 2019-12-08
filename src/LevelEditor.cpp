@@ -1,6 +1,7 @@
 #include "LevelEditor.h"
 
-LevelEditor::LevelEditor(sf::Vector2u size, sf::Font& font) : _currentState(LevelEditor::closed), _clickedItem(-1)
+LevelEditor::LevelEditor(sf::Vector2u size, sf::Font& font)
+    : _currentState(LevelEditor::closed), _clickedItem(-1), _chosenLevel(3), _inDeleteMode(false), _clickCooldown(0.3f), _clickTimer(0)
 {
     _editorCanvas = new Canvas(size, sf::Color::Black);
     _map = new Canvas(sf::Vector2u(1750, 720), "Assets/Images/forest1Background.png");
@@ -8,6 +9,7 @@ LevelEditor::LevelEditor(sf::Vector2u size, sf::Font& font) : _currentState(Leve
     initStrings();
     initObjects();
     initButtons(font);
+    initText(font);
 }
 
 LevelEditor::~LevelEditor()
@@ -15,11 +17,7 @@ LevelEditor::~LevelEditor()
     delete _editorCanvas;
     delete _map;
 
-    delete _exitButton;
-    delete _saveButton;
-
-    for(auto& button : _itemsButtonVector)
-        delete button;
+    DeleteButtons();
 
     for(auto& item : _itemsVector)
         delete item;
@@ -31,11 +29,24 @@ LevelEditor::~LevelEditor()
 void LevelEditor::initButtons(sf::Font& font)
 {
     _exitButton = new Button({200.f, 100.f}, _editorCanvas->getSize() - sf::Vector2f(200.f, 100.f), font, "Exit", sf::Color::Blue);
-    _saveButton = new Button({200.f, 100.f}, _editorCanvas->getSize() - sf::Vector2f(200.f, 100.f + _exitButton->getSize().y*2), font, "Save", sf::Color::Green);
+    _deleteButton = new Button({200.f, 100.f}, _editorCanvas->getSize() - sf::Vector2f(200.f, 100.f + _exitButton->getSize().y*1.2f), font, "Delete", sf::Color::Cyan);
+    _saveButton = new Button({200.f, 100.f}, _editorCanvas->getSize() - sf::Vector2f(200.f, 100.f + _exitButton->getSize().y*2.4f), font, "Save", sf::Color::Green);
+
+    _plusMapButton = new Button({100.f, 100.f}, _saveButton->getPosition() - sf::Vector2f(200.f, 0), font, "+", sf::Color::Green);
+    _minusMapButton = new Button({100.f, 100.f}, _saveButton->getPosition() - sf::Vector2f(400.f, 0), font, "-", sf::Color::Red);
 
     for(size_t i=0; i<6; i++)
         _itemsButtonVector.push_back(new Button({150.f, 50.f}, sf::Vector2f(200.f*i, _map->getSize().y + 100.f), font, _stringsVector[i], sf::Color::Yellow, sf::Color(163, 95, 23), 20));
 
+}
+
+void LevelEditor::initText(sf::Font& font)
+{
+    _chosenLevelText.setFont(font);
+    _chosenLevelText.setPosition(_minusMapButton->getPosition() + sf::Vector2f(100.f, 0));
+    _chosenLevelText.setCharacterSize(64);
+
+    updateChosenLevelText();
 }
 
 void LevelEditor::initStrings()
@@ -71,6 +82,11 @@ void LevelEditor::updateItems(const sf::Vector2f& mousePos)
             _itemsVector[_clickedItem]->Enlarge();
     }
 
+    if(_inDeleteMode)
+        for(size_t i=0; i<_addedToMapItemsVector.size(); i++)
+            if(_addedToMapItemsVector[i]->getGlobalBounds().contains(mousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                DeleteItem(i);
+
 }
 
 void LevelEditor::updateButtons(const sf::Vector2f& mousePos)
@@ -86,6 +102,14 @@ void LevelEditor::updateButtons(const sf::Vector2f& mousePos)
             _currentState = LevelEditor::closed;
         }
     }
+    else if(_deleteButton->hovers(mousePos))
+    {
+        _deleteButton->Light();
+
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && _clickedItem != -2)
+            _inDeleteMode = true;
+
+    }
     else if(_saveButton->hovers(mousePos))
     {
         _saveButton->Light();
@@ -93,24 +117,70 @@ void LevelEditor::updateButtons(const sf::Vector2f& mousePos)
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
             SaveInFile();
     }
+    else if(_plusMapButton->hovers(mousePos))
+    {
+        _plusMapButton->Light();
+
+        if(Click())
+        {
+            _chosenLevel++;
+            updateChosenLevelText();
+        }
+    }
+    else if(_minusMapButton->hovers(mousePos))
+    {
+        _minusMapButton->Light();
+
+        if(Click() && _chosenLevel > 0)
+        {
+            _chosenLevel--;
+            updateChosenLevelText();
+        }
+    }
     else
     {
-        for(size_t i=0; i<_itemsButtonVector.size(); i++)
-            if(_itemsButtonVector[i]->hovers(mousePos))
-            {
-                _itemsButtonVector[i]->Light();
-
-                if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                {
-                    _clickedItem = i;
-                }
-            }
-            else
-                _itemsButtonVector[i]->Dark();
+        updateItemsButtons(mousePos);
 
         _exitButton->Dark();
+        _deleteButton->Dark();
         _saveButton->Dark();
+
+        _plusMapButton->Dark();
+        _minusMapButton->Dark();
     }
+}
+
+void LevelEditor::updateItemsButtons(const sf::Vector2f& mousePos)
+{
+    for(size_t i=0; i<_itemsButtonVector.size(); i++)
+        if(_itemsButtonVector[i]->hovers(mousePos))
+        {
+            _itemsButtonVector[i]->Light();
+
+            if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            {
+                _clickedItem = i;
+                _inDeleteMode = false;
+            }
+        }
+        else
+            _itemsButtonVector[i]->Dark();
+}
+
+void LevelEditor::updateChosenLevelText()
+{
+    std::stringstream ss;
+    ss<<_chosenLevel;
+
+    _chosenLevelText.setString(ss.str());
+}
+
+void LevelEditor::updateTime()
+{
+    if(_clickTimer < _clickCooldown)
+        _clickTimer += _clock.getElapsedTime().asSeconds();
+
+    _clock.restart().asSeconds();
 }
 
 void LevelEditor::Update(const sf::Vector2f& mousePos)
@@ -120,6 +190,7 @@ void LevelEditor::Update(const sf::Vector2f& mousePos)
     case LevelEditor::open:
         updateButtons(mousePos);
         updateItems(mousePos);
+        updateTime();
         break;
     case LevelEditor::closed:
         break;
@@ -143,7 +214,12 @@ void LevelEditor::Render(sf::RenderTarget& window)
     _map->render(window);
 
     _exitButton->render(window);
+    _deleteButton->render(window);
     _saveButton->render(window);
+
+    _plusMapButton->render(window);
+    _minusMapButton->render(window);
+    window.draw(_chosenLevelText);
 
     for(auto& button : _itemsButtonVector)
         button->render(window);
@@ -160,13 +236,38 @@ void LevelEditor::ClearItems()
     EditorItem::ResetPlatformCounter();
 }
 
+void LevelEditor::DeleteItem(size_t id)
+{
+    delete _addedToMapItemsVector[id];
+    _addedToMapItemsVector.erase(_addedToMapItemsVector.begin() + id);
+    _inDeleteMode = false;
+}
+
+void LevelEditor::DeleteButtons()
+{
+    delete _exitButton;
+    delete _deleteButton;
+    delete _saveButton;
+
+    delete _plusMapButton;
+    delete _minusMapButton;
+
+    for(auto& button : _itemsButtonVector)
+        delete button;
+}
+
 void LevelEditor::Move(sf::Vector2f& distance)
 {
     _editorCanvas->move(distance);
     _map->move(distance);
 
     _exitButton->move(distance);
+    _deleteButton->move(distance);
     _saveButton->move(distance);
+
+    _plusMapButton->move(distance);
+    _minusMapButton->move(distance);
+    _chosenLevelText.move(distance);
 
     for(auto& button : _itemsButtonVector)
         button->move(distance);
@@ -193,6 +294,17 @@ sf::Vector2f PositionOnMap(const sf::Vector2f& mousePos)
 bool LevelEditor::ClickedOnMap(const sf::Vector2f& mousePos)
 {
     return sf::Mouse::isButtonPressed(sf::Mouse::Left) && _map->getGlobalBounds().contains(mousePos);
+}
+
+bool LevelEditor::Click()
+{
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && _clickTimer > _clickCooldown)
+    {
+        _clickTimer = 0;
+        return true;
+    }
+
+    return false;
 }
 
 void LevelEditor::CheckIfClickedItem()
@@ -241,7 +353,7 @@ void LevelEditor::SaveInFile()
     if(_addedToMapItemsVector.size() == 0)
         return;
 
-    FileWriter::AssignFile(99, &PositionOnMap);
+    FileWriter::AssignFile(_chosenLevel, &PositionOnMap);
     FileWriter::WriteData(_addedToMapItemsVector, _stringsVector);
 
     ClearItems();

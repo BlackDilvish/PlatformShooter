@@ -57,6 +57,7 @@ class GameMenu : public IMenu
             Button* _newGameButton;
             Button* _optionsButton;
             Button* _exitButton;
+            Button* _editorButton;
 
             ///Editor
 
