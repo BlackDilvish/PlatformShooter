@@ -1,0 +1,3 @@
+mapSize: 3500 -360 
+
+PlayerPosition: 722 508

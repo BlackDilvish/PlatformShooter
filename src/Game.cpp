@@ -11,10 +11,7 @@ Game::Game()
 
 Game::~Game()
 {
-    freeEnemies();
-    freeNpc();
-    freeObjects();
-    freeCollect();
+    ClearLevel();
 
     delete gameMenu;
     delete window;
@@ -33,8 +30,8 @@ void Game::initWindow()
 
 void Game::initView()
 {
-    mainView.setCenter(window->getSize().x/2.f,window->getSize().y/2.f);
-    mainView.setSize(sf::Vector2f(window->getSize().x,window->getSize().y));
+    mainView.setCenter(sf::Vector2f(window->getSize())/2.f);
+    mainView.setSize(sf::Vector2f(window->getSize()));
 
     window->setView(mainView);
 }
@@ -66,23 +63,30 @@ void Game::initImages()
 void Game::initMap(size_t mapId)
 {
     currentLevel = mapId;
-    freeEnemies();
-    freeNpc();
-    freeObjects();
-    freeCollect();
-    PlatformsManager::clear();
+    ClearLevel();
 
     FileReader::AssignFile(mapId, defaultFont);
-    FileReader::Load(enemiesVector, npcVector, doorsVector, collectVector, mapSize);
+    FileReader::Load(enemiesVector, npcVector, doorsVector, collectVector, mapSize, _playerPosition);
 
-    player1.reset({10,800}, mapSize, collectVector.size());
-    mainView.setCenter(sf::Vector2f(window->getSize())/2.f);
+    player1.reset(_playerPosition, mapSize, collectVector.size());
+
+    setView();
     setScene(currentLevel, sf::Vector2f(0, mapSize.y));
 }
 
 void Game::setScene(size_t lvl,const sf::Vector2f& pos)
 {
     mapSprite[lvl].setPosition(pos);
+}
+
+void Game::setView()
+{
+    if(player1.getPosition().y > window->getSize().y/2.f)
+        mainView.setCenter(sf::Vector2f(window->getSize())/2.f);
+    else if(player1.getPosition().y - window->getSize().y > mapSize.y)
+        mainView.setCenter(sf::Vector2f(window->getSize().x/2.f, player1.getPosition().y - player1.getSize().y/2.f));
+    else
+        mainView.setCenter(sf::Vector2f(window->getSize().x/2.f, mapSize.y + window->getSize().y/2.f));
 }
 
 void Game::pollevents()
@@ -287,6 +291,15 @@ void Game::freeCollect()
         delete collectable;
 
     collectVector.clear();
+}
+
+void Game::ClearLevel()
+{
+    freeEnemies();
+    freeNpc();
+    freeObjects();
+    freeCollect();
+    PlatformsManager::clear();
 }
 
 const bool Game::isPlaying() const

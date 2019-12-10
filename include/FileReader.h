@@ -24,7 +24,8 @@ class FileReader
                          std::vector<Npc*> &npcVector,
                          std::vector<Object_Doors*> &doorsVector,
                          std::vector<Collectable*> &collectVector,
-                         sf::Vector2f& mapSize);
+                         sf::Vector2f& mapSize,
+                         sf::Vector2f& playerPosition);
 
         static void AssignFile(size_t mapId, sf::Font& defaultFont);
 
@@ -41,6 +42,7 @@ class FileReader
         static void LoadDoors(std::vector<Object_Doors*> &doorsVector);
         static void LoadCollectables(std::vector<Collectable*> &collectVector);
         static void LoadMapSize(sf::Vector2f& mapSize);
+        static void LoadPlayerPosition(sf::Vector2f& playerPosition);
 
         ///Utilities functions
 

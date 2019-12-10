@@ -24,10 +24,14 @@ void FileWriter::WriteData(std::vector<EditorItem*>& itemsVector, std::vector<st
         else
             position = item->getPosition();
 
-        if(item->getPlatform() >= 0 &&
-            (item->Id() == 1 || item->Id() == 2))
+        if(item->getPlatform() >= 0 && item->IsEnemy())
         {
             _configFile<<itemsStrings[item->Id()]<<"(Platform): "<<item->getPlatform()<<"\n";
+        }
+        else if(item->IsPlayer())
+        {
+            _configFile<<itemsStrings[item->Id()]<<": "<<
+                         position.x<<" "<<position.y<<"\n";
         }
         else
         {

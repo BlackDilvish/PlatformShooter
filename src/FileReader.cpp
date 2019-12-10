@@ -110,11 +110,18 @@ void FileReader::LoadMapSize(sf::Vector2f& mapSize)
     _configFile>>mapSize.y;
 }
 
+void FileReader::LoadPlayerPosition(sf::Vector2f& playerPosition)
+{
+    _configFile>>playerPosition.x;
+    _configFile>>playerPosition.y;
+}
+
 void FileReader::Load(std::vector<Enemy*>&        enemiesVector,
                       std::vector<Npc*>&          npcVector,
                       std::vector<Object_Doors*>& doorsVector,
                       std::vector<Collectable*>&  collectVector,
-                      sf::Vector2f&               mapSize)
+                      sf::Vector2f&               mapSize,
+                      sf::Vector2f&               playerPosition)
 {
     _configFile.open(_path);
 
@@ -138,6 +145,8 @@ void FileReader::Load(std::vector<Enemy*>&        enemiesVector,
                 FileReader::LoadCollectables(collectVector);
             else if(type == "mapSize:")
                 FileReader::LoadMapSize(mapSize);
+            else if(type == "PlayerPosition:")
+                FileReader::LoadPlayerPosition(playerPosition);
         }
 
         _configFile.close();

@@ -1,4 +1,5 @@
 mapSize: 4000.0 0.0
+PlayerPosition: 10.0 800.0
 Platform: 600.0 50.0 500.0 800.0
 Platform: 500.0 50.0 1200.0 600.0
 Goblin(Platform): 1

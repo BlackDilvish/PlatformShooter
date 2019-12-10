@@ -1,11 +1,19 @@
 mapSize: 3500 -360 
 
-BlackSmith: 1856 968 100 100 1
-dupa
-Platform: 1288 776 450 100 1
-Platform: 1810 668 404 100 1
-Orc(Platform): 1
-Orc(Platform): 0
-Coin: 1654 730 40 40 0
-Coin: 2124 608 40 40 0
-Platform: 1060 924 262 100 1
+BlackSmith: 1700 760 100 100 0
+BlackSmith: 1390 398 100 100 0
+BlackSmith: 1756 254 100 100 0
+BlackSmith: 1568 656 100 100 0
+BlackSmith: 1150 572 100 100 0
+BlackSmith: 1266 924 100 100 0
+BlackSmith: 1758 474 100 100 0
+BlackSmith: 2076 554 100 100 0
+Goblin: 2378 842 100 100 0 0
+Goblin: 2700 718 100 100 0 0
+Goblin: 2938 648 100 100 0 0
+Goblin: 2666 420 100 100 0 0
+Goblin: 2954 324 100 100 0 0
+Goblin: 2792 256 100 100 0 0
+Goblin: 3300 520 100 100 0 0
+Goblin: 2484 514 100 100 0 0
+PlayerPosition: 236 838

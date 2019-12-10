@@ -3,9 +3,7 @@
 LevelEditor::LevelEditor(sf::Vector2u size, sf::Font& font)
     : _currentState(LevelEditor::closed), _clickedItem(-1), _chosenLevel(3), _inDeleteMode(false), _clickCooldown(0.3f), _clickTimer(0)
 {
-    _editorCanvas = new Canvas(size, sf::Color::Black);
-    _map = new Canvas(sf::Vector2u(1750, 720), "Assets/Images/forest1Background.png");
-
+    initCanvases(size);
     initStrings();
     initObjects();
     initButtons(font);
@@ -26,6 +24,12 @@ LevelEditor::~LevelEditor()
     ClearItems();
 }
 
+void LevelEditor::initCanvases(const sf::Vector2u& size)
+{
+    _editorCanvas = new Canvas(size, sf::Color::Black);
+    _map = new Canvas(sf::Vector2u(1750, 720), "Assets/Images/forest1Background.png");
+}
+
 void LevelEditor::initButtons(sf::Font& font)
 {
     _exitButton = new Button({200.f, 100.f}, _editorCanvas->getSize() - sf::Vector2f(200.f, 100.f), font, "Exit", sf::Color::Blue);
@@ -37,6 +41,8 @@ void LevelEditor::initButtons(sf::Font& font)
 
     for(size_t i=0; i<6; i++)
         _itemsButtonVector.push_back(new Button({150.f, 50.f}, sf::Vector2f(200.f*i, _map->getSize().y + 100.f), font, _stringsVector[i], sf::Color::Yellow, sf::Color(163, 95, 23), 20));
+    for(size_t i=6; i<7; i++)
+        _itemsButtonVector.push_back(new Button({150.f, 50.f}, sf::Vector2f(200.f*(i-6), _map->getSize().y + 200.f), font, _stringsVector[i], sf::Color::Yellow, sf::Color(163, 95, 23), 20));
 
 }
 
@@ -57,6 +63,7 @@ void LevelEditor::initStrings()
     _stringsVector.push_back("BlackSmith");
     _stringsVector.push_back("Doors");
     _stringsVector.push_back("Coin");
+    _stringsVector.push_back("PlayerPosition");
 }
 
 void LevelEditor::initObjects()
@@ -67,6 +74,7 @@ void LevelEditor::initObjects()
     _itemsVector.push_back(new EditorItem(sf::Vector2f(50.f, 50.f),  "Assets/Images/Items/ItemBlackSmith.png", 3));
     _itemsVector.push_back(new EditorItem(sf::Vector2f(40.f, 50.f),  "Assets/Images/Items/ItemDoors.png",      4));
     _itemsVector.push_back(new EditorItem(sf::Vector2f(20.f, 20.f),  "Assets/Images/Items/ItemCoin.png",       5));
+    _itemsVector.push_back(new EditorItem(sf::Vector2f(50.f, 50.f),  "Assets/Images/Items/ItemPlayer.png",     6));
 }
 
 void LevelEditor::updateItems(const sf::Vector2f& mousePos)
@@ -240,7 +248,6 @@ void LevelEditor::DeleteItem(size_t id)
 {
     delete _addedToMapItemsVector[id];
     _addedToMapItemsVector.erase(_addedToMapItemsVector.begin() + id);
-    _inDeleteMode = false;
 }
 
 void LevelEditor::DeleteButtons()

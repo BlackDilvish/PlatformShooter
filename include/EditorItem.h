@@ -33,6 +33,7 @@ class EditorItem
 
         bool IsPlatform() const;
         bool IsEnemy() const;
+        bool IsPlayer() const;
 
     private:
 

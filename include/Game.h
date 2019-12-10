@@ -6,7 +6,7 @@
 #include<sstream>
 #include<fstream>
 #include<SFML/Graphics.hpp>
-#include"Icon.h"
+#include"Icon.c"
 #include"Player.h"
 #include"PlatformsManager.h"
 #include"Enemy.h"
@@ -43,6 +43,7 @@ class Game
         void initView();
         void initMap(size_t lvl);
         void setScene(size_t lvl,const sf::Vector2f& pos);
+        void setView();
 
         ///updates
         void pollevents();
@@ -62,6 +63,7 @@ class Game
         void renderCollect() const;
 
         ///free
+        void ClearLevel();
         void freeEnemies();
         void freeNpc();
         void freeObjects();
@@ -79,6 +81,7 @@ class Game
 
         sf::View mainView;
         sf::Vector2f mapSize;
+        sf::Vector2f _playerPosition;
 
         ///Menu
         GameMenu* gameMenu;

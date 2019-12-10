@@ -106,4 +106,9 @@ bool EditorItem::IsEnemy() const
     return false;
 }
 
+bool EditorItem::IsPlayer() const
+{
+    return _id == 6;
+}
+
 int EditorItem::_platformCounter;

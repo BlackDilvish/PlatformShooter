@@ -31,6 +31,7 @@ class LevelEditor
         ///Private functions
 
             ///Initializers
+        void initCanvases(const sf::Vector2u& size);
         void initStrings();
         void initObjects();
         void initButtons(sf::Font& font);

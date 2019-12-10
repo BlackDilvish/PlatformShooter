@@ -1,4 +1,5 @@
 mapSize: 4000.0 -400.0
+PlayerPosition: 10.0 800.0
 
 ***Initialising_Platforms***
 Platform: 300.0 800.0 300.0 50.0 0

@@ -18,7 +18,7 @@ class FileWriter
 
     private:
         FileWriter() = default;
-        virtual ~FileWriter() = default;
+        ~FileWriter() = default;
 
         static std::string FileToString(size_t id);
         static void WriteAdditionalInfo(size_t id);
