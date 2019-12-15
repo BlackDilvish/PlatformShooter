@@ -17,6 +17,7 @@ class IMenu
         void setStatus(size_t newStatus);
 
     protected:
+
         virtual void initCanvases(sf::Vector2u size) = 0;
         virtual void initButtons() = 0;
 

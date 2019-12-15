@@ -3,6 +3,7 @@
 
 #include<SFML/Graphics.hpp>
 #include"Collectable.h"
+#include"TexturesManager.h"
 
 class Coin : public Collectable
 {
@@ -11,7 +12,7 @@ class Coin : public Collectable
         virtual ~Coin();
 
     private:
-        char* _path;
+        sf::Texture _texture;
         size_t _nOfFrames;
         sf::Vector2f _size;
         float _frequency;

@@ -1,6 +1,7 @@
 #ifndef FILEREADER_H
 #define FILEREADER_H
 
+#include<chrono>
 #include<iostream>
 #include<fstream>
 #include<string>

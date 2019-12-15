@@ -8,7 +8,7 @@
 #include"IMenu.h"
 #include"LevelEditor.h"
 
-class GameMenu : public IMenu
+class GameMenu : public virtual IMenu
 {
     public:
         GameMenu(sf::Vector2u size);

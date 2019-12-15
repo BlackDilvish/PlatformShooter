@@ -22,9 +22,26 @@
     this->isRecurrent=repeatFlag;
  }
 
-Animation::~Animation()
+Animation::Animation(const sf::Texture& texture,size_t numberOfFrames,sf::Vector2f sizeOfFrame,sf::Vector2f sizeOfPlayer,float cooldown,bool repeatFlag,bool backwards)
 {
-    //dtor
+    framesPic = texture;
+
+    if(!backwards)
+        for(size_t i=0;i<numberOfFrames;i++)
+            this->frames.push_back(sf::IntRect(i*sizeOfFrame.x,0,sizeOfFrame.x,sizeOfFrame.y));
+    else
+        for(size_t i=0;i<numberOfFrames;i++)
+            this->frames.push_back(sf::IntRect((i+1)*sizeOfFrame.x,0,-sizeOfFrame.x,sizeOfFrame.y));
+
+    this->animation.setSize(sizeOfPlayer);
+    this->animation.setTexture(&this->framesPic);
+    this->animation.setTextureRect(this->frames[0]);
+
+    this->speed=cooldown;
+    this->timer=0;
+    this->currentFrame=0;
+    this->isEnabled=1;
+    this->isRecurrent=repeatFlag;
 }
 
 void Animation::setPosition(sf::Vector2f pos)

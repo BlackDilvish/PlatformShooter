@@ -35,11 +35,6 @@ Enemy::Enemy(float *enemyParams)
     initVariables();
 }
 
-Enemy::~Enemy()
-{
-
-}
-
 void Enemy::freeAnimation()
 {
     if(walkAnimationRight != nullptr)
@@ -72,6 +67,12 @@ void Enemy::setAnimation(char* path,size_t numberOfFrames,sf::Vector2f sizeOfFra
 {
     walkAnimationRight = new Animation(path, numberOfFrames, sizeOfFrame, enemyShape.getSize(), cooldown, true, false);
     walkAnimationLeft = new Animation(path, numberOfFrames, sizeOfFrame, enemyShape.getSize(), cooldown, true, true);
+}
+
+void Enemy::setAnimation(const sf::Texture& texture,size_t numberOfFrames,sf::Vector2f sizeOfFrame,float cooldown)
+{
+    walkAnimationRight = new Animation(texture, numberOfFrames, sizeOfFrame, enemyShape.getSize(), cooldown, true, false);
+    walkAnimationLeft = new Animation(texture, numberOfFrames, sizeOfFrame, enemyShape.getSize(), cooldown, true, true);
 }
 
 void Enemy::updateAnimations()

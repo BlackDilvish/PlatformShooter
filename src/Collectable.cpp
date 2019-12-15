@@ -16,6 +16,11 @@ Collectable::Collectable(sf::Vector2f pos, sf::Vector2f size, size_t value)
     _bottomRange = pos.y + _rangeLimit;
 }
 
+void Collectable::setTexture(const sf::Texture& texture)
+{
+    _collectTexture = new sf::Texture(texture);
+}
+
 void Collectable::setTexture(char* path)
 {
     _collectTexture = new sf::Texture;
@@ -25,6 +30,12 @@ void Collectable::setTexture(char* path)
 void Collectable::setAnimation(char* path,size_t numberOfFrames,sf::Vector2f sizeOfFrame,float cooldown)
 {
     _collectAnimation = new Animation(path,numberOfFrames,sizeOfFrame,_shape.getSize(),cooldown,true,false);
+    _collectAnimation->setPosition(_shape.getPosition());
+}
+
+void Collectable::setAnimation(const sf::Texture& texture,size_t numberOfFrames,sf::Vector2f sizeOfFrame,float cooldown)
+{
+    _collectAnimation = new Animation(texture,numberOfFrames,sizeOfFrame,_shape.getSize(),cooldown,true,false);
     _collectAnimation->setPosition(_shape.getPosition());
 }
 

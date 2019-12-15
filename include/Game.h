@@ -20,6 +20,7 @@
 #include"Collectable.h"
 #include"Coin.h"
 #include"FileReader.h"
+#include"TexturesManager.h"
 
 class Game
 {

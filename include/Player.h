@@ -9,6 +9,7 @@
 #include<sstream>
 #include<math.h>
 #include"PlatformsManager.h"
+#include"PlayerInput.h"
 #include"Bullet.h"
 #include"Enemy.h"
 #include"Goblin.h"
@@ -41,6 +42,7 @@ class Player
         void initText();
 
         void updateInput();
+        void updateMovement();
         void updateTime();
         void updateShooting(sf::RenderWindow& window, sf::View view);
         void updateEnemiesInteraction(std::vector<Enemy*> &enemiesVector, bool &gameover);
@@ -49,6 +51,7 @@ class Player
         void updatePlatformCollisions();
         void updateHealthBar(sf::RenderWindow& window, sf::View view);
         void updatePoints(size_t newPoints);
+        void fixAnimation();
 
         void renderHealthBar(sf::RenderTarget &window) const;
 
@@ -75,16 +78,23 @@ class Player
         bool collidingTop;
         bool _talks;
 
+        ///Time
         sf::Clock clock;
         float deltaTime;
-        ///Bullets
 
+        ///Inputs
+        PlayerInput _playerInput;
+        bool _jump;
+        bool _goRight;
+        bool _goLeft;
+
+        ///Bullets
         std::vector<Bullet> _bulletsVector;
 
         float shootCooldown;
         float shootTimer;
-        ///HealthBar
 
+        ///HealthBar
         sf::Texture hearthTex;
         sf::RectangleShape tempHearth;
         std::vector<sf::RectangleShape> hearthVector;
@@ -94,13 +104,13 @@ class Player
         bool invulnerableFlag;
         float invulnerableTimer;
         float invulnerableCooldown;
-        ///Points
 
+        ///Points
         sf::Text _pointsText;
         size_t _pointsCounter;
         size_t _maxPoints;
-        ///Animation
 
+        ///Animation
         Animation* runAnimationRight;
         Animation* runAnimationLeft;
         Animation* idleAnimationRight;

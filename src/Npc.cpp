@@ -45,6 +45,12 @@ void Npc::setAnimation(char* path,size_t numberOfFrames,sf::Vector2f sizeOfFrame
     idleAnimation->setPosition(shape.getPosition());
 }
 
+void Npc::setAnimation(const sf::Texture& texture,size_t numberOfFrames,sf::Vector2f sizeOfFrame,float cooldown)
+{
+    idleAnimation = new Animation(texture, numberOfFrames, sizeOfFrame, shape.getSize(), cooldown, true, false);
+    idleAnimation->setPosition(shape.getPosition());
+}
+
 void Npc::initText(sf::Font& font, std::vector<std::string>& npcMessages)
 {
     MessageBox.messageText.setFont(font);

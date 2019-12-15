@@ -19,7 +19,9 @@ class Collectable
 
     protected:
         void setTexture(char* path);
+        void setTexture(const sf::Texture& texture);
         void setAnimation(char* path,size_t numberOfFrames,sf::Vector2f sizeOfFrame,float cooldown);
+        void setAnimation(const sf::Texture& texture,size_t numberOfFrames,sf::Vector2f sizeOfFrame,float cooldown);
         void deleteTexture();
         void deleteAnimation();
 

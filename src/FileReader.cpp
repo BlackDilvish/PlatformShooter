@@ -123,6 +123,9 @@ void FileReader::Load(std::vector<Enemy*>&        enemiesVector,
                       sf::Vector2f&               mapSize,
                       sf::Vector2f&               playerPosition)
 {
+    ///Starts timer
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
     _configFile.open(_path);
 
     if(_configFile.is_open())
@@ -153,6 +156,9 @@ void FileReader::Load(std::vector<Enemy*>&        enemiesVector,
     }
     else
         std::cout<<"Brak pliku\n";
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::cout << "Czas otwierania pliku = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()<< "[ms]" << std::endl;
 }
 
 std::string FileReader::FileToString(size_t id)

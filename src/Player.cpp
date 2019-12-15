@@ -40,6 +40,7 @@ void Player::initVariables()
     inSpace=true;
     collidingTop=false;
     _talks = false;
+
 }
 
 void Player::initShapes()
@@ -103,6 +104,12 @@ void Player::updateTime()
 
 void Player::updateInput()
 {
+    _playerInput.Update();
+
+    _jump = (_playerInput.BindKey('w')->State() == InputKey::pressed) && !inSpace;
+    _goRight = (_playerInput.BindKey('d')->State() == InputKey::pressed);
+    _goLeft = (_playerInput.BindKey('a')->State() == InputKey::pressed);
+
     velocity.x=0;
 
     ///Player falls faster then he hovers
@@ -113,14 +120,17 @@ void Player::updateInput()
             velocity.y+=gravity*0.2;
     else
         velocity.y=0;
+}
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W) && !inSpace)
+void Player::updateMovement()
+{
+    if(_jump)
     {
         inSpace=true;
         velocity.y-=gravity*3;
     }
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    if(_goLeft)
     {
         velocity.x-=movementSpeed;
         previousDirection = 0;
@@ -128,7 +138,7 @@ void Player::updateInput()
         if(!inSpace)
             runAnimationLeft->update();
     }
-    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    else if(_goRight)
     {
         velocity.x+=movementSpeed;
         previousDirection = 1;
@@ -145,7 +155,10 @@ void Player::updateInput()
     }
 
     playerShape.move(velocity);
+}
 
+void Player::fixAnimation()
+{
     if(collidingTop)
     {
         runAnimationRight->setPosition(sf::Vector2f(playerShape.getPosition().x, runAnimationRight->getPosition().y));
@@ -187,7 +200,6 @@ void Player::updateHealthBar(sf::RenderWindow& window, sf::View view)
                 hearthVector[i].setFillColor(tempColor);
         }
     }
-
 }
 
 void Player::updatePoints(size_t newPoints)
@@ -381,6 +393,8 @@ void Player::update(sf::RenderWindow &window,sf::View view,bool &gameOver,std::v
 {
     updateTime();
     updateInput();
+    updateMovement();
+    fixAnimation();
     updateWindowCollisions();
     updateShooting(window,view);
     updateEnemiesInteraction(enemiesVector, gameOver);

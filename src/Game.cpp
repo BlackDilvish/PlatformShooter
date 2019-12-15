@@ -58,6 +58,7 @@ void Game::initImages()
     mapSprite[3].setTexture(forest1Texture);
 
     PlatformsManager::initTextures();
+    TexturesManager::LoadTextures();
 }
 
 void Game::initMap(size_t mapId)

@@ -10,8 +10,9 @@ class Animation
 {
     public:
         Animation(char *path,size_t numberOfFrames,sf::Vector2f sizeOfFrame,sf::Vector2f sizeOfPlayer,float cooldown,bool repeatFlag,bool backwards);
+        Animation(const sf::Texture& texture,size_t numberOfFrames,sf::Vector2f sizeOfFrame,sf::Vector2f sizeOfPlayer,float cooldown,bool repeatFlag,bool backwards);
 
-        virtual ~Animation();
+        ~Animation() = default;
 
         void update();
         void setPosition(sf::Vector2f pos);

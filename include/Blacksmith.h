@@ -2,6 +2,7 @@
 #define BLACKSMITH_H
 
 #include"Npc.h"
+#include"TexturesManager.h"
 
 class Blacksmith : public Npc
 {
@@ -9,9 +10,6 @@ class Blacksmith : public Npc
         Blacksmith(sf::Vector2f Position,const sf::Vector2f size = {100.f,100.f});
         virtual ~Blacksmith();
 
-    protected:
-
-    private:
 };
 
 #endif // BLACKSMITH_H

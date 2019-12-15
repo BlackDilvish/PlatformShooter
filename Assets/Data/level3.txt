@@ -1,19 +1,15 @@
 mapSize: 3500 -360 
 
-BlackSmith: 1700 760 100 100 0
-BlackSmith: 1390 398 100 100 0
-BlackSmith: 1756 254 100 100 0
-BlackSmith: 1568 656 100 100 0
-BlackSmith: 1150 572 100 100 0
-BlackSmith: 1266 924 100 100 0
-BlackSmith: 1758 474 100 100 0
-BlackSmith: 2076 554 100 100 0
-Goblin: 2378 842 100 100 0 0
-Goblin: 2700 718 100 100 0 0
-Goblin: 2938 648 100 100 0 0
-Goblin: 2666 420 100 100 0 0
-Goblin: 2954 324 100 100 0 0
-Goblin: 2792 256 100 100 0 0
-Goblin: 3300 520 100 100 0 0
-Goblin: 2484 514 100 100 0 0
-PlayerPosition: 236 838
+Platform: 302 470 200 100 1
+PlayerPosition: 384 368
+Platform: 670 482 200 100 1
+Goblin(Platform): 1
+Platform: 1028 484 412 100 1
+Orc(Platform): 2
+Platform: 1684 478 200 100 1
+Goblin(Platform): 3
+Coin: 1526 320 40 40 0
+Coin: 916 364 40 40 0
+Platform: 2062 470 384 100 1
+Goblin(Platform): 4
+Doors: 2346 366 80 100 1
