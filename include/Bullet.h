@@ -8,7 +8,9 @@
 class Bullet
 {
     public:
-        Bullet(sf::Vector2f pos, sf::Vector2f dir, float radius = 5.f, sf::Color color = sf::Color::Red, float lifetime = 2.f, float speed = 5.f);
+        Bullet(sf::Vector2f pos, sf::Vector2f dir, float radius, float lifetime, float speed);
+        Bullet(sf::Vector2f pos, sf::Vector2f dir, sf::Color color, float radius = 10.f, float lifetime = 1.f, float speed = 10.f);
+        Bullet(sf::Vector2f pos, sf::Vector2f dir, const sf::Texture& texture, float radius = 10.f, float lifetime = 1.f, float speed = 10.f);
         virtual ~Bullet() = default;
 
         void Update();

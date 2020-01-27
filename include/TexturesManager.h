@@ -20,10 +20,13 @@ class TexturesManager
             ///Collect
             static sf::Texture coinTexture;
 
+            ///Missiles
+            static sf::Texture magicMissileTexture;
+
 
     private:
-        TexturesManager();
-        ~TexturesManager();
+        TexturesManager() = default;
+        ~TexturesManager() = default;
 };
 
 #endif // TEXTURESMANAGER_H

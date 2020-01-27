@@ -1,11 +1,22 @@
 #include "Bullet.h"
 
-Bullet::Bullet(sf::Vector2f pos, sf::Vector2f dir, float radius, sf::Color color, float lifetime, float speed)
+Bullet::Bullet(sf::Vector2f pos, sf::Vector2f dir, float radius, float lifetime, float speed)
     : _bulletSpeed(speed), _bulletTrajectory(dir*speed), _lifeTimer(0), _periodOfLife(lifetime)
 {
     _bulletShape.setRadius(radius);
     _bulletShape.setPosition(pos);
+}
+
+Bullet::Bullet(sf::Vector2f pos, sf::Vector2f dir, sf::Color color, float radius, float lifetime, float speed)
+    : Bullet(pos, dir, radius, lifetime, speed)
+{
     _bulletShape.setFillColor(color);
+}
+
+Bullet::Bullet(sf::Vector2f pos, sf::Vector2f dir, const sf::Texture& texture, float radius, float lifetime, float speed)
+    : Bullet(pos, dir, radius, lifetime, speed)
+{
+    _bulletShape.setTexture(&texture);
 }
 
 void Bullet::Update()

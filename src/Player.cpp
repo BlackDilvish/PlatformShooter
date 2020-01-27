@@ -260,7 +260,7 @@ void Player::updateShooting(sf::RenderWindow& window, sf::View view)
         float size = sqrt(pow(shotVector.x,2) + pow(shotVector.y,2));
         shotVector /= size;
 
-        _bulletsVector.push_back(Bullet(getPosition()+getSize()/2.f, shotVector));
+        _bulletsVector.push_back(Bullet(getPosition()+getSize()/2.f, shotVector, TexturesManager::magicMissileTexture));
     }
 
     for(size_t i=0; i<_bulletsVector.size(); i++)
